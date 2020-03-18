@@ -16,7 +16,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const newUser = req.body;
-    await insertUser(newUser);
+    let newUserId = await insertUser(newUser);
     res.status(201);
     res.send({ message: 'New User inserted.', userId : newUserId });
 });
