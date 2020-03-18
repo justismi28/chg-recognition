@@ -1,51 +1,44 @@
-// ./src/database/users.js
+// ./src/database/nominations.js
 const {getDatabase} = require('./mongo');
 const {ObjectID} = require('mongodb');
 
-const collectionName = 'users';
+const collectionName = 'nominations';
 
-async function insertUser(user) {
+async function insertNomination(nomination) {
   const database = await getDatabase();
-  const {insertedId} = await database.collection(collectionName).insertOne(user);
+  const {insertedId} = await database.collection(collectionName).insertOne(nomination);
   return insertedId;
 }
 
-async function getUsers() {
+async function getNominations() {
   const database = await getDatabase();
   return await database.collection(collectionName).find({}).toArray();
 }
 
-async function getUserById(id) {
-    const database = await getDatabase();
-    return await database.collection(collectionName).findOne({
-        _id: new ObjectID(id),
-    });
-  }
-
-async function deleteUser(id) {
+async function deleteNomination(id) {
     const database = await getDatabase();
     await database.collection(collectionName).deleteOne({
         _id: new ObjectID(id),
     });
 }
 
-async function updateUser(id, user) {
+async function updateNomination(id, nomination) {
     const database = await getDatabase();
-    delete user._id;
+    delete nomination._id;
     await database.collection(collectionName).update(
         { _id: new ObjectID(id), },
         {
         $set: {
-            ...user,
+            ...nomination,
         },
         },
     );
 }
 
+
 module.exports = {
-  insertUser,
-  getUsers,
-  getUserById,
-  deleteUser,
-  updateUser,
+  insertNomination,
+  getNominations,
+  deleteNomination,
+  updateNomination,
 };
