@@ -22,6 +22,13 @@ async function getUserById(id) {
     });
   }
 
+async function getUserByLogin(login) {
+    const database = await getDatabase();
+    return await database.collection(collectionName).findOne({
+        login: login
+    });
+  }
+
 async function deleteUser(id) {
     const database = await getDatabase();
     await database.collection(collectionName).deleteOne({
@@ -42,10 +49,27 @@ async function updateUser(id, user) {
     );
 }
 
+async function insertDefaultUsers(){
+  const database = await getDatabase();
+  console.log("inserting users");
+  let users = [
+      {name: 'Justin Smith', login: 'justin.smith@chghealthcare.com', points: 250, nominationPoints: 500},
+      {name: 'Trevor Duersch', login: 'trevor.duersch@chghealthcare.com', points: 250, nominationPoints: 500},
+      {name: 'Ryan Hamblin', login: 'ryan.hamblin@chghealthcare.com', points: 250, nominationPoints: 500},
+      {name: 'Curtis Porter', login: 'curtis.porter@chghealthcare.com', points: 250, nominationPoints: 500},
+  ];
+  await database.collection(collectionName).insertMany(users, function(err, res){
+        if (err) throw err;
+        console.log("Number of documents inserted: " + res.insertedCount);
+    })
+}
+
 module.exports = {
   insertUser,
   getUsers,
   getUserById,
+  getUserByLogin,
   deleteUser,
   updateUser,
+  insertDefaultUsers,
 };
