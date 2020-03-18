@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const {insertUser, getUsers, getUserById, deleteUser, updateUser} = require('./database/users');
+const {insertUser, getUsers, getUserById, deleteUser, updateUser} = require('../database/users');
 
 /* GET users listing. */
 // defining an endpoint to return all users
