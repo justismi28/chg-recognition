@@ -8,7 +8,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const {startDatabase} = require('./database/mongo');
-const {insertUser, getUsers} = require('./database/users');
+const {insertUser, getUsers, deleteUser, updateUser} = require('./database/users');
+
 
 // defining the Express app
 const app = express();
@@ -25,9 +26,28 @@ app.use(cors());
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
 
-// defining an endpoint to return all ads
+// defining an endpoint to return all users
 app.get('/', async (req, res) => {
     res.send(await getUsers());
+});
+
+app.post('/', async (req, res) => {
+    const newUser = req.body;
+    await insertUser(newUser);
+    res.send({ message: 'New User inserted.' });
+});
+
+// endpoint to delete an user
+app.delete('/:id', async (req, res) => {
+    await deleteUser(req.params.id);
+    res.send({ message: 'User Deleted.' });
+});
+  
+// endpoint to update an user
+app.put('/:id', async (req, res) => {
+    const updatedUser = req.body;
+    await updateUser(req.params.id, updatedUser);
+    res.send({ message: 'User Points updated.' });
 });
 
 // start the in-memory MongoDB instance
