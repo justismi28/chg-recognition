@@ -35,7 +35,6 @@ async function updateUser(id, user) {
     );
 }
 
-
 module.exports = {
   insertUser,
   getUsers,
