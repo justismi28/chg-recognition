@@ -15,9 +15,8 @@ async function getUsers() {
   return await database.collection(collectionName).find({}).toArray();
 }
 
-async function getUser(id) {
+async function getUserById(id) {
     const database = await getDatabase();
-    console.log('here')
     return await database.collection(collectionName).findOne({
         _id: new ObjectID(id),
     });
@@ -47,7 +46,7 @@ async function updateUser(id, user) {
 module.exports = {
   insertUser,
   getUsers,
-  getUser,
+  getUserById,
   deleteUser,
   updateUser,
 };
