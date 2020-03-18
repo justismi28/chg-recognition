@@ -7,10 +7,19 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
+const nominationsRouter = require('./routes/nominations');
+
 const {startDatabase} = require('./database/mongo');
 const {insertUser, getUsers, getUserById, deleteUser, updateUser} = require('./database/users');
 const{getAwards, getAwardsById, insertAllAwards} = require('./database/awards');
 
+process.on('unhandledRejection', (reason, p) => {
+//    console.log("Possibly Unhandled Rejection at: Promise ", p, " reason: ", reason);
+    // application specific logging here
+    console.log('Unhandled rejection at: ', p, ` reason: ${reason}`);
+    // fail is undefined so the app will stop instead of hanging
+    fail;
+});
 
 // defining the Express app
 const app = express();
@@ -26,6 +35,9 @@ app.use(cors());
 
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
+
+// Router for nominations
+app.use('/nominations', nominationsRouter);
 
 // defining an endpoint to return all users
 app.get('/users/', async (req, res) => {
