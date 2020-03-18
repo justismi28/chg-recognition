@@ -6,7 +6,10 @@ const collectionName = 'redemptions';
 
 async function getRedemptionsforUser(id){
     const database = await getDatabase()
-    return await database.collection(collectionName).find({userId: id}).toArray();
+    return await database.collection(collectionName).find({userId: id}).toArray(function(err, results) {
+        if (err) throw err;
+        console.log(results);
+    });
 }
 
 async function insertRedemption(redemption) {
