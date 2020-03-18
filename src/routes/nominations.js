@@ -1,13 +1,30 @@
 var express = require('express');
 var router = express.Router();
 
-const {insertNomination, getNominations, deleteNomination, updateNomination} = require('../database/nominations');
+const {insertNomination, getNominations, getNominationsByNominator, getNominationsByNominee, 
+  getMyNominations, deleteNomination, updateNomination} = require('../database/nominations');
 
 // defining an endpoint to return all nominations
 router.get('/', async (req, res) => {
+  const nominator = req.query.nominator;
+  const nominee = req.query.nominee;
+
+  if (nominator) {
+    res.send(await getNominationsByNominator(nominator));
+  }
+  else if (nominee) {
+    res.send(await getNominationsByNominee(nominee));
+  }
+  else {
     res.send(await getNominations());
+  }
 });
 
+// endpoint to get the nominations for the logged in user
+router.get('/mine/:id', async (req, res) => {
+    res.send(await getMyNominations(req.params.id));
+});
+  
 router.post('/', async (req, res) => {
     const newNomination = req.body;
     await insertNomination(newNomination);

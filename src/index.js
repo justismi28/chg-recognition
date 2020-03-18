@@ -14,11 +14,10 @@ const usersRouter = require('./routes/users');
 const {startDatabase} = require('./database/mongo');
 const{getAwards, getAwardsById, insertAllAwards} = require('./database/awards');
 const{insertDefaultUsers} = require('./database/users');
+const{insertDefaultNominations} = require('./database/Nominations');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log(`Unhandled rejection at: ${p} reason: ${reason}`);
-    // fail is undefined so the app will stop instead of hanging
-    fail;
 });
 
 // defining the Express app
@@ -53,6 +52,8 @@ app.get('/awards/:id', async (req, res) => {
 startDatabase().then(async () => {
     await insertAllAwards();
     await insertDefaultUsers();
+    await insertDefaultNominations();
+
     // start the server
     app.listen(8081, async () => {
       console.log('listening on port 8081');
