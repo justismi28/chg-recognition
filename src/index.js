@@ -8,7 +8,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const {startDatabase} = require('./database/mongo');
-const {insertUser, getUsers, deleteUser, updateUser} = require('./database/users');
+const {insertUser, getUsers, getUser, deleteUser, updateUser} = require('./database/users');
 
 
 // defining the Express app
@@ -27,14 +27,21 @@ app.use(cors());
 app.use(morgan('combined'));
 
 // defining an endpoint to return all users
-app.get('/', async (req, res) => {
+app.get('/user/', async (req, res) => {
     res.send(await getUsers());
 });
 
+// defining an endpoint to get specific User by ID
+app.get('/user/:id', async (req, res) => {
+    res.send(await getUser(req.params.id));
+});
+
+// create new user
 app.post('/', async (req, res) => {
     const newUser = req.body;
-    await insertUser(newUser);
-    res.send({ message: 'New User inserted.' });
+    let newUserId  = await insertUser(newUser);
+    res.status(201);
+    res.send({ message: 'New User inserted.', userId : newUserId });
 });
 
 // endpoint to delete an user
@@ -52,10 +59,8 @@ app.put('/:id', async (req, res) => {
 
 // start the in-memory MongoDB instance
 startDatabase().then(async () => {
-    await insertUser({title: 'Hello, now from the in-memory database!'});
-  
     // start the server
-    app.listen(3001, async () => {
-      console.log('listening on port 3001');
+    app.listen(8081, async () => {
+      console.log('listening on port 8081');
     });
   });
