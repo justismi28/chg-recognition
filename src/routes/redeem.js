@@ -3,7 +3,19 @@ var router = express.Router();
 
 const{getRedemptionsforUser, insertRedemption} = require('../database/redemptions');
 
-
+/**
+ * @swagger
+ * /redeem/{id}:
+ *   get:
+ *     description: Returns all redemptions for a user id
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: users
+ *         schema:
+ *           type: array
+ */
 router.get('/:id', async (req, res) => {
     console.log('getting redemptions')
     res.send(await getRedemptionsforUser(req.params.id));

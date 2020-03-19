@@ -3,8 +3,19 @@ var router = express.Router();
 
 const {insertUser, getUsers, getUserById, deleteUser, updateUser} = require('../database/users');
 
-/* GET users listing. */
-// defining an endpoint to return all users
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     description: Returns users
+ *     produces:
+ *      - application/json
+ *     responses:
+ *       200:
+ *         description: users
+ *         schema:
+ *           type: array
+ */
 router.get('/', async (req, res) => {
     res.send(await getUsers());
 });
