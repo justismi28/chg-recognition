@@ -14,12 +14,12 @@ const rewardsRouter = require('./routes/rewards');
 const redeemRouter = require('./routes/redeem.js');
 
 const {startDatabase} = require('./database/mongo');
-const{insertAllRewards} = require('./database/rewards');
+const{insertAllRewards, getRewards} = require('./database/rewards');
 const{insertDefaultUsers} = require('./database/users');
 const{insertDefaultNominations} = require('./database/nominations');
 
 process.on('unhandledRejection', (reason, p) => {
-    console.log(`Unhandled rejection at: ${p} reason: ${reason}`);
+    console.log('Unhandled rejection at: ', p, ' reason: ', reason);
 });
 
 // defining the Express app
@@ -56,9 +56,12 @@ app.get('/', async (req, res) => {
 
 // start the in-memory MongoDB instance
 startDatabase().then(async () => {
-    await insertAllRewards();
-    await insertDefaultUsers();
-    await insertDefaultNominations();
+    const existingAwards = await getRewards();
+    if (existingAwards.length == 0) {
+        await insertAllRewards();
+        await insertDefaultUsers();
+        await insertDefaultNominations();
+    }
 
     // start the server
     app.listen(8081, async () => {

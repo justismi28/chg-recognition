@@ -18,7 +18,7 @@ async function getUsers() {
 async function getUserById(id) {
     const database = await getDatabase();
     let result = await database.collection(collectionName).findOne({
-        _id: id,
+        _id: new ObjectID(id)
     });
     return result;
   }
@@ -32,9 +32,10 @@ async function getUserByLogin(login) {
 
 async function deleteUser(id) {
     const database = await getDatabase();
-    await database.collection(collectionName).deleteOne({
+    const response = await database.collection(collectionName).deleteOne({
         _id: new ObjectID(id),
     });
+    console.log('Delete response ', response.deletedCount);
 }
 
 async function updateUser(id, user) {
@@ -54,10 +55,10 @@ async function insertDefaultUsers(){
   const database = await getDatabase();
   console.log("inserting users");
   let users = [
-      {"_id": "5e729a3c6ea33327d2851b4e", name: 'Justin Smith', login: 'justin.smith@chghealthcare.com', points: 250, nominationPoints: 100},
-      {"_id": "5e729a3c6ea33327d2851b4f", name: 'Trevor Duersch', login: 'trevor.duersch@chghealthcare.com', points: 250, nominationPoints: 100},
-      {"_id": "5e729a3c6ea33327d2851b50", name: 'Ryan Hamblin', login: 'ryan.hamblin@chghealthcare.com', points: 250, nominationPoints: 100},
-      {"_id": "5e729a3c6ea33327d2851b51", name: 'Curtis Porter', login: 'curtis.porter@chghealthcare.com', points: 250, nominationPoints: 100},
+      {"_id": new ObjectID("5e729a3c6ea33327d2851b4e"), name: 'Justin Smith', login: 'justin.smith@chghealthcare.com', points: 250, nominationPoints: 100},
+      {"_id": new ObjectID("5e729a3c6ea33327d2851b4f"), name: 'Trevor Duersch', login: 'trevor.duersch@chghealthcare.com', points: 250, nominationPoints: 100},
+      {"_id": new ObjectID("5e729a3c6ea33327d2851b50"), name: 'Ryan Hamblin', login: 'ryan.hamblin@chghealthcare.com', points: 250, nominationPoints: 100},
+      {"_id": new ObjectID("5e729a3c6ea33327d2851b51"), name: 'Curtis Porter', login: 'curtis.porter@chghealthcare.com', points: 250, nominationPoints: 100},
   ];
   await database.collection(collectionName).insertMany(users, function(err, res){
         if (err) throw err;

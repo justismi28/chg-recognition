@@ -25,13 +25,17 @@ async function getMyNominations(nominee) {
   // GraphQL would be helpful here but takes more time :)
   for (let index = 0; index < myNominations.length; index++) {
     let nomination = myNominations[index];
-    console.log(nomination);
-    let nominator = await getUserById(nomination.nominatorId);
-    nomination.nominator = {
-      _id: nominator._id,
-      name: nominator.name
+    let nominatorId = nomination.nominatorId;
+    let nominator = await getUserById(nominatorId);
+    if (!nominator) {
+      console.log('No nominator found for nominator id ' + nomination.nominatorId);
     }
-    console.log(nomination.nominator);
+    else {
+      nomination.nominator = {
+        _id: nominator._id,
+        name: nominator.name
+      }
+    }
     delete nomination.nomineeId;
     delete nomination.nominatorId;
   }
@@ -74,8 +78,8 @@ async function insertDefaultNominations(){
   const database = await getDatabase();
   console.log("inserting nominations");
   let nominations = [
-      {_id: '5e72a2176eb55d5560830859', nominatorId: '5e729a3c6ea33327d2851b4f', nomineeId: '5e729a3c6ea33327d2851b50', points: 50, coreValue: 'Putting People First', message: 'Great job!'},
-      {_id: '5e72a294a5047737cc06edf0', nominatorId: '5e729a3c6ea33327d2851b50', nomineeId: '5e729a3c6ea33327d2851b4e', points: 50, coreValue: 'Quality & Professionalism', message: 'He does excellent work!'},
+      {_id: new ObjectID('5e72a2176eb55d5560830859'), nominatorId: '5e729a3c6ea33327d2851b4f', nomineeId: '5e729a3c6ea33327d2851b50', points: 50, coreValue: 'Putting People First', message: 'Great job!'},
+      {_id: new ObjectID('5e72a294a5047737cc06edf0'), nominatorId: '5e729a3c6ea33327d2851b50', nomineeId: '5e729a3c6ea33327d2851b4e', points: 50, coreValue: 'Quality & Professionalism', message: 'He does excellent work!'},
   ];
   await database.collection(collectionName).insertMany(nominations, function(err, res){
       if (err) throw err;

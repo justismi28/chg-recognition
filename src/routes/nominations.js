@@ -22,6 +22,7 @@ router.get('/', async (req, res) => {
 
 // endpoint to get the nominations for the logged in user
 router.get('/mine/:id', async (req, res) => {
+    console.log('Getting my nominations for ', req.params.id);
     res.send(await getMyNominations(req.params.id));
 });
   

@@ -5,8 +5,20 @@ const {MongoClient} = require('mongodb');
 let database = null;
 
 async function startDatabase() {
-  const mongo = new MongoMemoryServer();
-  const mongoDBURL = await mongo.getConnectionString();
+  const MONGO_URL_ENV = process.env.MONGO_URL;
+  let mongoDBURL;
+  if (MONGO_URL_ENV) {
+    // Use external Mongo instance
+    console.log('Using external Mongo instance');
+    mongoDBURL = MONGO_URL_ENV;
+  }
+  else {
+    // Use In-Memory Mongo
+    console.log('Using in-memory Mongo');
+    const mongo = new MongoMemoryServer();
+    mongoDBURL = await mongo.getConnectionString();
+  }
+
   const connection = await MongoClient.connect(mongoDBURL, {useNewUrlParser: true});
   database = connection.db();
 }

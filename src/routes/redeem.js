@@ -5,7 +5,7 @@ const{getRedemptionsforUser, insertRedemption} = require('../database/redemption
 
 
 router.get('/:id', async (req, res) => {
-    console.log('getting rewards')
+    console.log('getting redemptions')
     res.send(await getRedemptionsforUser(req.params.id));
 });
 
