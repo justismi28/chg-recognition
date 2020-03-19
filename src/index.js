@@ -16,7 +16,7 @@ const redeemRouter = require('./routes/redeem.js');
 const {startDatabase} = require('./database/mongo');
 const{insertAllRewards} = require('./database/rewards');
 const{insertDefaultUsers} = require('./database/users');
-const{insertDefaultNominations} = require('./database/Nominations');
+const{insertDefaultNominations} = require('./database/nominations');
 
 process.on('unhandledRejection', (reason, p) => {
     console.log(`Unhandled rejection at: ${p} reason: ${reason}`);
