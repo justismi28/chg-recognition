@@ -10,7 +10,6 @@ const options = {
       description: pjson.description,
 
     },
-    host:"localhost:8081",
     tags: [
       {
         name: 'Users',
