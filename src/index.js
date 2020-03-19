@@ -25,7 +25,7 @@ process.on('unhandledRejection', (reason, p) => {
 // defining the Express app
 const app = express();
 
-// adding Helmet to enhance your API's security
+// adding Helmet to enhance security
 app.use(helmet());
 
 // using bodyParser to parse JSON bodies into JS objects
@@ -42,6 +42,17 @@ app.use('/users', usersRouter);
 app.use('/nominations', nominationsRouter);
 app.use('/rewards', rewardsRouter);
 app.use('/redeem', redeemRouter);
+
+//simple endpoint to return base information about the app.
+app.get('/', async (req, res) => {
+    let pjson = require('../package.json');
+    res.status(200);
+    res.send({
+        "name":pjson.name,
+        "version": pjson.version,
+        "description": pjson.description,
+    });
+});
 
 // start the in-memory MongoDB instance
 startDatabase().then(async () => {
