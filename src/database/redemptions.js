@@ -14,6 +14,7 @@ async function getRedemptionsforUser(id){
 async function insertRedemption(redemption) {
     const database = await getDatabase();
     updateUser(redemption);
+    redemption['created_date'] = Date.now();
     const {insertedId} = await database.collection(collectionName).insertOne(redemption); 
     return insertedId;
 }
