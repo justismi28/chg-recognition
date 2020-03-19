@@ -1,29 +1,29 @@
-// ./src/database/users.js
+// ./src/database/rewards.js
 const {getDatabase} = require('./mongo');
 const {ObjectID} = require('mongodb');
 
-const collectionName = 'awards';
+const collectionName = 'rewards';
 const chgSwag = 'CHG Swag';
 const chgReward = 'CHG Rewards'
 const megaPrizes = 'Mega Redemptions'
 const giftCards = 'Gift Cards'
 
-async function getAwards() {
+async function getRewards() {
     const database = await getDatabase();
     return await database.collection(collectionName).find({}).toArray();
 }
 
-async function getAwardsById(id){
+async function getRewardsById(id){
     const database = await getDatabase();
     return await database.collection(collectionName).findOne({
         _id: new ObjectID(id),
     });
 }
 
-async function insertAllAwards(){
+async function insertAllRewards(){
     const database = await getDatabase();
-    console.log("inserting awards");
-    let awardObj = [
+    console.log("inserting Rewards");
+    let rewardObj = [
         {_id: '5e729a3c6ea33327d2851b42', name: 'CHG Hat', pointValue: 250, category: chgSwag, imageUrl: 'https://media.gettyimages.com/photos/red-baseball-cap-picture-id118358120?k=6&m=118358120&s=612x612&w=0&h=xAbpE_31KNSj2Mnw3qJHQSRf7OX81jTci3uX8FvQ4Cc='},
         {_id: '5e729a3c6ea33327d2851b43', name: 'CHG HeadPhones', pointValue: 250, category: chgSwag, imageUrl: 'https://media.gettyimages.com/photos/headphones-picture-id171292342?k=6&m=171292342&s=612x612&w=0&h=s_-156ygoCOeQuKG1R2CT2gRYmL3yTR8QZhH9Xe4Hy4='},
         {_id: '5e729a3c6ea33327d2851b44', name: 'CHG Backpack', pointValue: 250, category: chgSwag, imageUrl: 'https://media.gettyimages.com/photos/backpack-with-grey-and-blue-colors-picture-id167759603?k=6&m=167759603&s=612x612&w=0&h=2i896Z8ltaSAzcDf0tZVsMvqMEnreorzMCeO6sPNIT8='},
@@ -37,14 +37,14 @@ async function insertAllAwards(){
         {_id: '5e729a3c6ea33327d2851b4c', name: '$15 Cafeteria', pointValue: 250, category: giftCards, imageUrl: 'https://media.gettyimages.com/photos/serving-lunch-in-cafetreria-picture-id657021234?k=6&m=657021234&s=612x612&w=0&h=zxcXOrL3N35AaGx_wX9FWAfWVCCDwF-i4QNFU9iAqN0='},
         {_id: '5e729a3c6ea33327d2851b4d', name: '$25 Cafeteria', pointValue: 250, category: giftCards, imageUrl: 'https://media.gettyimages.com/photos/serving-lunch-in-cafetreria-picture-id657021234?k=6&m=657021234&s=612x612&w=0&h=zxcXOrL3N35AaGx_wX9FWAfWVCCDwF-i4QNFU9iAqN0='},
     ];
-    await database.collection(collectionName).insertMany(awardObj, function(err, res){
+    await database.collection(collectionName).insertMany(rewardObj, function(err, res){
         if (err) throw err;
         console.log("Number of documents inserted: " + res.insertedCount);
     })
 }
 
 module.exports = {
-    getAwards,
-    getAwardsById,
-    insertAllAwards,
+    getRewards,
+    getRewardsById,
+    insertAllRewards,
 };

@@ -10,9 +10,11 @@ const morgan = require('morgan');
 const {insertUser} = require('./database/users');
 const nominationsRouter = require('./routes/nominations');
 const usersRouter = require('./routes/users');
+const rewardsRouter = require('./routes/rewards');
+const redeemRouter = require('./routes/redeem.js');
 
 const {startDatabase} = require('./database/mongo');
-const{getAwards, getAwardsById, insertAllAwards} = require('./database/awards');
+const{insertAllRewards} = require('./database/rewards');
 const{insertDefaultUsers} = require('./database/users');
 const{insertDefaultNominations} = require('./database/Nominations');
 
@@ -38,19 +40,12 @@ app.use(morgan('combined'));
 // Routes
 app.use('/users', usersRouter);
 app.use('/nominations', nominationsRouter);
-
-// defining an endpoint to get specific User by ID
-app.get('/awards/', async (req, res) => {
-    res.send(await getAwards(req.params.id));
-});
-
-app.get('/awards/:id', async (req, res) => {
-    res.send(await getAwardsById(req.params.id));
-});
+app.use('/rewards', rewardsRouter);
+app.use('/redeem', redeemRouter);
 
 // start the in-memory MongoDB instance
 startDatabase().then(async () => {
-    await insertAllAwards();
+    await insertAllRewards();
     await insertDefaultUsers();
     await insertDefaultNominations();
 
@@ -58,4 +53,4 @@ startDatabase().then(async () => {
     app.listen(8081, async () => {
       console.log('listening on port 8081');
     });
-  });
+});
