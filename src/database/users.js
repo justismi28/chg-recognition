@@ -4,6 +4,30 @@ const {ObjectID} = require('mongodb');
 
 const collectionName = 'users';
 
+function validateUser(user) {
+  let invalidFields = [];
+  let validation = { invalidFields: invalidFields };
+
+  if (!user.name) {
+    invalidFields.push('name');   
+  }
+  if (!user.login) {
+    invalidFields.push('login');   
+  }
+  if (!user.points) {
+    invalidFields.push('points');   
+  }
+  if (!user.nominationPoints) {
+    invalidFields.push('nominationPoints');   
+  }
+
+  if (invalidFields.length > 0) {
+    validation.failed = true;
+  }
+
+  return validation;
+}
+
 async function insertUser(user) {
   const database = await getDatabase();
   const {insertedId} = await database.collection(collectionName).insertOne(user);
@@ -36,6 +60,7 @@ async function deleteUser(id) {
         _id: new ObjectID(id),
     });
     console.log('Delete response ', response.deletedCount);
+    return response.deletedCount;
 }
 
 async function updateUser(id, user) {
@@ -74,4 +99,5 @@ module.exports = {
   deleteUser,
   updateUser,
   insertDefaultUsers,
+  validateUser,
 };

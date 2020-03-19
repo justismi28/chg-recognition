@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+const {validateIdParam} = require('./validateIdParam');
 const {insertNomination, getNominations, getNominationsByNominator, getNominationsByNominee, 
   getMyNominations, deleteNomination, updateNomination} = require('../database/nominations');
 
@@ -23,6 +24,11 @@ router.get('/', async (req, res) => {
 // endpoint to get the nominations for the logged in user
 router.get('/mine/:id', async (req, res) => {
     console.log('Getting my nominations for ', req.params.id);
+
+    if (!validateIdParam(req, res)) {
+        return;
+    }
+
     res.send(await getMyNominations(req.params.id));
 });
   
@@ -34,12 +40,20 @@ router.post('/', async (req, res) => {
 
 // endpoint to delete an nomination
 router.delete('/:id', async (req, res) => {
+    if (!validateIdParam(req, res)) {
+        return;
+    }
+
     await deleteNomination(req.params.id);
     res.send({ message: 'Nomination Deleted.' });
 });
   
 // endpoint to update an nomination
 router.put('/:id', async (req, res) => {
+    if (!validateIdParam(req, res)) {
+        return;
+    }
+
     const updatedNomination = req.body;
     await updateNomination(req.params.id, updatedNomination);
     res.send({ message: 'Nomination Points updated.' });

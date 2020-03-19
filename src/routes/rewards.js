@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+const {validateIdParam} = require('./validateIdParam');
 const{getRewards, getRewardsById, deleteRewards} = require('../database/rewards');
 
 //get all rewards listed in the system
@@ -11,6 +12,10 @@ router.get('/', async (req, res) => {
 
 //get rewards by ID
 router.get('/:id', async (req, res) => {
+    if (!validateIdParam(req, res)) {
+        return;
+    }
+
     console.log('getting rewards')
     res.send(await getRewardsById(req.params.id));
 });
