@@ -74,8 +74,8 @@ router.put('/:id', async (req, res) => {
         return;
     }
 
-    let validation = validateUser(newUser);
-    if (validation.invalidFields) {
+    let validation = validateUser(updatedUser);
+    if (validation.invalidFields.length > 0) {
         res.status(400);
         res.send({ message: 'Missing or invalid fields: ' + validation.invalidFields.join(', ')});
         return;
