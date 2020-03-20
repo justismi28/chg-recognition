@@ -1,10 +1,15 @@
 // ./src/database/redemptions.js
 const {getDatabase} = require('./mongo');
-const {ObjectID} = require('mongodb');
+const{getUserById, updateUser} = require('./users');
+const{getRewardsById} = require('./rewards');
 
 const collectionName = 'redemptions';
 const rewardsCollectionName = 'rewards';
-const usersCollectionName = 'users';
+
+async function getAllRedemptions() {
+  const database = await getDatabase();
+  return await database.collection(collectionName).find({}).toArray();
+}
 
 async function getRedemptionsforUser(id){
     const database = await getDatabase()
@@ -13,38 +18,41 @@ async function getRedemptionsforUser(id){
 
 async function insertRedemption(redemption) {
     const database = await getDatabase();
-    updateUser(redemption);
+    await updateUserPoints(redemption);
     redemption['created_date'] = Date.now();
     const {insertedId} = await database.collection(collectionName).insertOne(redemption); 
     return insertedId;
 }
 
-async function updateUser(redemption) {
+async function updateUserPoints(redemption) {
     const database = await getDatabase();
 
     let getUserQuery = {_id: redemption.userId};
 
-    let user = await database.collection(usersCollectionName).findOne({_id: redemption.userId});
+    let user = await getUserById(redemption.userId);
+    if (!user) {
+      return { success : false, message: 'No user found with id ' + redemption.userId };
+    }
+  
     let userPoints = user.points;
 
-    let reward = await database.collection(rewardsCollectionName).findOne({_id: redemption.rewardId})
+    console.log('redemption: ' + JSON.stringify(redemption, null, 2));
+    let reward = await getRewardsById(redemption.rewardId);
+    if (!reward) {
+        throw new Error('Could not find reward for ' + redemption.rewardId);
+    }
     let rewardPoints = reward.pointValue;
 
     if(rewardPoints > userPoints){
         throw new Error('Reward is worth more than the user has. Cancelling transation.')
     }
 
-    let newPoints = userPoints - rewardPoints;
-    console.log('Redemption Transaction new points: ' + newPoints);
-
-    let newValues = { $set: {points: newPoints}};
+    user.points -= rewardPoints;
+    console.log('After redemption transaction user\'s new points are: ' + user.points);
 
     
-    await database.collection(usersCollectionName).updateOne(getUserQuery, newValues, function(err, res) {
-        if (err) throw err;
-        console.log("1 document updated.");
-    });
-
+    // Save the user again
+    await updateUser(redemption.userId, user);
 }
 
 
@@ -52,4 +60,5 @@ async function updateUser(redemption) {
 module.exports = {
     getRedemptionsforUser,
     insertRedemption,
+    getAllRedemptions,
 };
