@@ -18,12 +18,19 @@ const{insertAllRewards, getRewards} = require('./database/rewards');
 const{insertDefaultUsers} = require('./database/users');
 const{insertDefaultNominations} = require('./database/nominations');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../swagger.json');
+
 process.on('unhandledRejection', (reason, p) => {
     console.log('Unhandled rejection at: ', p, ' reason: ', reason);
 });
 
 // defining the Express app
 const app = express();
+
+// swagger doc endpoint 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // adding Helmet to enhance security
 app.use(helmet());
