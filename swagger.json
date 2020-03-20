@@ -1,0 +1,549 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Node with express service to interact with the MongoDB data for the CHG Recognition core values application",
+        "version": "1.0.0",
+        "title": "chg-recognition",
+        "contact": {
+            "email": [
+                "curtis.porter@chghealthcare.com",
+                "justin.smith@chgheatlhcare.com"
+            ]
+        }
+    },
+    "tags": [
+        {
+            "name": "default",
+            "description": "app information and version"
+        },
+        {
+            "name": "users",
+            "description": "API Endpoints to interact with User data"
+        },
+        {
+            "name": "nominations",
+            "description": "API Endpoints used to interact with nominations"
+        },
+        {
+            "name": "redeem",
+            "description": "API Endpoints used to get redemption history and redeem points"
+        },
+        {
+            "name": "rewards",
+            "description": "API Endpoints used to retrieve rewards that can be used for reward redemption"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "default"
+                ],
+                "summary": "used to retrieve app information",
+                "description": "returns app name, version and author information",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\n    \"name\": \"chg-recognition\",\n    \"version\": \"1.0.0\",\n    \"description\": \"application used for Hack-Days March 2020\"\n}"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "used to retrieve all user information",
+                "description": "returns all user information including points to gift and points accrued",
+                "schema": {
+                    "type": "array"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "[\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b4e\",\r\n        \"name\": \"Justin Smith\",\r\n        \"login\": \"justin.smith@chghealthcare.com\",\r\n        \"points\": 250,\r\n        \"nominationPoints\": 100\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b4f\",\r\n        \"name\": \"Trevor Duersch\",\r\n        \"login\": \"trevor.duersch@chghealthcare.com\",\r\n        \"points\": 250,\r\n        \"nominationPoints\": 100\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b50\",\r\n        \"name\": \"Ryan Hamblin\",\r\n        \"login\": \"ryan.hamblin@chghealthcare.com\",\r\n        \"points\": 250,\r\n        \"nominationPoints\": 100\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b51\",\r\n        \"name\": \"Curtis Porter\",\r\n        \"login\": \"curtis.porter@chghealthcare.com\",\r\n        \"points\": 250,\r\n        \"nominationPoints\": 100\r\n    }\r\n]"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "used to create new users",
+                "description": "creates new user in the users collection",
+                "schema": {
+                    "type": "array"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \"New User inserted.\",\r\n    \"userId\": \"5e74f00105573865689e397b\"\r\n}"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "used to retrieve all user information for a specific ID",
+                "description": "returns all user information including points to gift and points accrued for a specific User ID",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "_Id",
+                        "description": "ID of user to return",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"_id\": \"5e729a3c6ea33327d2851b51\",\r\n    \"name\": \"Curtis Porter\",\r\n    \"login\": \"curtis.porter@chghealthcare.com\",\r\n    \"points\": 250,\r\n    \"nominationPoints\": 100\r\n}"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "used to update a specific user by ID",
+                "description": "udpates a user document",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "_Id",
+                        "description": "ID of user to return",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \"User Updated.\"\r\n}"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "used to delete a specific user",
+                "description": "deletes a user document",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "_Id",
+                        "description": "ID of user to return",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \"User Deleted.\"\r\n}"
+                        }
+                    }
+                }
+            }
+        },
+        "/nominations/": {
+            "get": {
+                "tags": [
+                    "nominations"
+                ],
+                "summary": "used to retrieve all nomination information",
+                "description": "returns all nomination information",
+                "schema": {
+                    "type": "array"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "[\r\n    {\r\n        \"_id\": \"5e72a2176eb55d5560830859\",\r\n        \"nominatorId\": \"5e729a3c6ea33327d2851b4f\",\r\n        \"nomineeId\": \"5e729a3c6ea33327d2851b50\",\r\n        \"points\": 50,\r\n        \"coreValue\": \"Putting People First\",\r\n        \"message\": \"Great job!\"\r\n    },\r\n    {\r\n        \"_id\": \"5e72a294a5047737cc06edf0\",\r\n        \"nominatorId\": \"5e729a3c6ea33327d2851b50\",\r\n        \"nomineeId\": \"5e729a3c6ea33327d2851b4e\",\r\n        \"points\": 50,\r\n        \"coreValue\": \"Quality & Professionalism\",\r\n        \"message\": \"He does excellent work!\"\r\n    }\r\n]"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "nominations"
+                ],
+                "summary": "used to create new nominations",
+                "description": "creates new nomination record in the nomination collection",
+                "schema": {
+                    "type": "array"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "nomination",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Nomination"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \"New Nomination inserted.\"\r\n}"
+                        }
+                    }
+                }
+            }
+        },
+        "/nominations/mine/{id}": {
+            "get": {
+                "tags": [
+                    "nominations"
+                ],
+                "summary": "used to retrieve the user specific nominations",
+                "description": "returns all nominations for that user",
+                "parameters": [
+                    {
+                        "name": "{id}",
+                        "description": "ID of user to return all nominations for",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "schema": {
+                    "type": "array"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "[\r\n    {\r\n        \"_id\": \"5e72a2176eb55d5560830859\",\r\n        \"points\": 50,\r\n        \"coreValue\": \"Putting People First\",\r\n        \"message\": \"Great job!\",\r\n        \"nominator\": {\r\n            \"_id\": \"5e729a3c6ea33327d2851b4f\",\r\n            \"name\": \"Trevor Duersch\"\r\n        }\r\n    }\r\n]"
+                        }
+                    }
+                }
+            }
+        },
+        "/nominations/{id}": {
+            "delete": {
+                "tags": [
+                    "nominations"
+                ],
+                "summary": "used to delete a specific nomination",
+                "description": "deletes a nomination document",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "_Id",
+                        "description": "ID of nomination to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \"Nomination Deleted.\"\r\n}"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "nominations"
+                ],
+                "summary": "used to update a specific nomination by ID",
+                "description": "updates a nomination document",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "_Id",
+                        "description": "ID of nomination to update",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \"Nomination Points updated.\"\r\n}"
+                        }
+                    }
+                }
+            }
+        },
+        "/redeem/": {
+            "post": {
+                "tags": [
+                    "redeem"
+                ],
+                "summary": "used to create new redemption record showing transaction",
+                "description": "used to create new redemption record showing transaction",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "redemption",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Redemption"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \"Request Redeemed and persisted.\",\r\n    \"id\": \"5e74f85ece31ab57005a02e4\"\r\n}"
+                        }
+                    }
+                }
+            }
+        },
+        "/redeem/{id}": {
+            "get": {
+                "tags": [
+                    "redeem"
+                ],
+                "summary": "used to retrieve app history of redeemed points for a specific user Id",
+                "description": "used to retrieve app history of redeemed points for a specific user Id",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "{id}",
+                        "description": "ID of user to return all redemptions for",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "[\r\n    {\r\n        \"_id\": \"5e74f815ce31ab57005a02e3\",\r\n        \"rewardId\": \"5e729a3c6ea33327d2851b47\",\r\n        \"userId\": \"5e729a3c6ea33327d2851b51\",\r\n        \"created_date\": 1584723989977\r\n    },\r\n    {\r\n        \"_id\": \"5e74f85ece31ab57005a02e4\",\r\n        \"rewardId\": \"5e729a3c6ea33327d2851b8\",\r\n        \"userId\": \"5e729a3c6ea33327d2851b51\",\r\n        \"created_date\": 1584724062832\r\n    }\r\n]"
+                        }
+                    }
+                }
+            }
+        },
+        "/rewards/": {
+            "get": {
+                "tags": [
+                    "rewards"
+                ],
+                "summary": "used to retrieve all rewards stored in the system that users can retrieve in 'store'",
+                "description": "used to retrieve all rewards stored in the system that users can retrieve in 'store'",
+                "schema": {
+                    "type": "array"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "[\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b42\",\r\n        \"name\": \"CHG Hat\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"CHG Swag\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/red-baseball-cap-picture-id118358120?k=6&m=118358120&s=612x612&w=0&h=xAbpE_31KNSj2Mnw3qJHQSRf7OX81jTci3uX8FvQ4Cc=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b43\",\r\n        \"name\": \"CHG HeadPhones\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"CHG Swag\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/headphones-picture-id171292342?k=6&m=171292342&s=612x612&w=0&h=s_-156ygoCOeQuKG1R2CT2gRYmL3yTR8QZhH9Xe4Hy4=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b44\",\r\n        \"name\": \"CHG Backpack\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"CHG Swag\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/backpack-with-grey-and-blue-colors-picture-id167759603?k=6&m=167759603&s=612x612&w=0&h=2i896Z8ltaSAzcDf0tZVsMvqMEnreorzMCeO6sPNIT8=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b45\",\r\n        \"name\": \"1 PTO Hour\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"CHG Rewards\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/the-colorful-deck-chairs-on-brighton-beach-uk-picture-id587231788?k=6&m=587231788&s=612x612&w=0&h=XvXOYNxWGu70e__E23xvxbQoqrceg567oRimNuN2S00=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b46\",\r\n        \"name\": \"Scott Beck's Parking Spot\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Mega Redemptions\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/color-stories-grey-picture-id602235813?k=6&m=602235813&s=612x612&w=0&h=No6RSxLcI80lHxWfl1TCFGBjvK8WABQ_DhloRE-Rp-s=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b47\",\r\n        \"name\": \"Presidents Club\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Mega Redemptions\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/female-friends-walking-by-window-at-airport-picture-id1010631724?k=6&m=1010631724&s=612x612&w=0&h=w7be4CVS7LWvQqM5NaKqVUedZw6rb5c9xXb1mcoKuks=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b48\",\r\n        \"name\": \"$25 Visa\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Gift Cards\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/visa-credit-cards-are-arranged-on-a-desk-february-25-2008-in-san-picture-id79989029?k=6&m=79989029&s=612x612&w=0&h=yNgQgi3U05gW-5Agfh4tXJexFm-n4eutjAxyCcWqrpY=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b49\",\r\n        \"name\": \"$50 Visa\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Gift Cards\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/visa-credit-cards-are-arranged-on-a-desk-february-25-2008-in-san-picture-id79989029?k=6&m=79989029&s=612x612&w=0&h=yNgQgi3U05gW-5Agfh4tXJexFm-n4eutjAxyCcWqrpY=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b4a\",\r\n        \"name\": \"$100 Visa\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Gift Cards\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/visa-credit-cards-are-arranged-on-a-desk-february-25-2008-in-san-picture-id79989029?k=6&m=79989029&s=612x612&w=0&h=yNgQgi3U05gW-5Agfh4tXJexFm-n4eutjAxyCcWqrpY=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b4b\",\r\n        \"name\": \"$10 Cafeteria\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Gift Cards\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/serving-lunch-in-cafetreria-picture-id657021234?k=6&m=657021234&s=612x612&w=0&h=zxcXOrL3N35AaGx_wX9FWAfWVCCDwF-i4QNFU9iAqN0=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b4c\",\r\n        \"name\": \"$15 Cafeteria\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Gift Cards\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/serving-lunch-in-cafetreria-picture-id657021234?k=6&m=657021234&s=612x612&w=0&h=zxcXOrL3N35AaGx_wX9FWAfWVCCDwF-i4QNFU9iAqN0=\"\r\n    },\r\n    {\r\n        \"_id\": \"5e729a3c6ea33327d2851b4d\",\r\n        \"name\": \"$25 Cafeteria\",\r\n        \"pointValue\": 250,\r\n        \"category\": \"Gift Cards\",\r\n        \"imageUrl\": \"https://media.gettyimages.com/photos/serving-lunch-in-cafetreria-picture-id657021234?k=6&m=657021234&s=612x612&w=0&h=zxcXOrL3N35AaGx_wX9FWAfWVCCDwF-i4QNFU9iAqN0=\"\r\n    }\r\n]"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "rewards"
+                ],
+                "summary": "used to delete a specific nomination",
+                "description": "deletes a nomination document",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "_Id",
+                        "description": "ID of nomination to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"message\": \" Deleted.\"\r\n}"
+                        }
+                    }
+                }
+            }
+        },
+        "/rewards/{id}": {
+            "get": {
+                "tags": [
+                    "rewards"
+                ],
+                "summary": "used to retrieve a specific reward for redemption",
+                "description": "used to retrieve a specific reward for redemption",
+                "schema": {
+                    "type": "object"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "{id}",
+                        "description": "ID of reward to return information for",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "examples": {
+                            "application/json": "{\r\n    \"_id\": \"5e729a3c6ea33327d2851b49\",\r\n    \"name\": \"$50 Visa\",\r\n    \"pointValue\": 250,\r\n    \"category\": \"Gift Cards\",\r\n    \"imageUrl\": \"https://media.gettyimages.com/photos/visa-credit-cards-are-arranged-on-a-desk-february-25-2008-in-san-picture-id79989029?k=6&m=79989029&s=612x612&w=0&h=yNgQgi3U05gW-5Agfh4tXJexFm-n4eutjAxyCcWqrpY=\"\r\n}"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "nominationPoints": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Nomination": {
+            "properties": {
+                "nominatorId": {
+                    "type": "id"
+                },
+                "nomineeId": {
+                    "type": "id"
+                },
+                "points": {
+                    "type": "integer"
+                },
+                "coreValue": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "datetime"
+                }
+            }
+        },
+        "Redemption": {
+            "properties": {
+                "rewardId": {
+                    "type": "id"
+                },
+                "userId": {
+                    "type": "id"
+                }
+            }
+        }
+    }
+}
