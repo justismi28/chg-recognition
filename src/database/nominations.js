@@ -2,15 +2,73 @@
 const {getDatabase} = require('./mongo');
 const {ObjectID} = require('mongodb');
 
-const{getUserById} = require('./users');
+const{getUserById, updateUser} = require('./users');
 
 const collectionName = 'nominations';
+
+function validateNomination(nomination, isNew) {
+  const validation = { invalidFields: [] };
+  const invalidFields = validation.invalidFields;
+  const CORE_VALUES = [ 'Growth', 'Putting People First', 'Continuous Improvement', 'Integrity & Ethics', 'Quality & Professionalism'];
+
+  if (isNew && (nomination.id || nomination._id)) {
+    invalidFields.push('id must not be included when inserting a new nomination');   
+  }
+  else if (!isNew && !nomination._id) {
+    invalidFields.push('_id must be included when updating a nomination');   
+  }
+  if (!nomination.nominatorId) {
+    invalidFields.push('nominatorId');   
+  }
+  if (!nomination.nomineeId) {
+    invalidFields.push('nomineeId');   
+  }
+  if (!nomination.points) {
+    invalidFields.push('points');   
+  }
+  if (!nomination.coreValue) {
+    invalidFields.push('coreValue');   
+  }
+  else if (!CORE_VALUES.includes(nomination.coreValue)) {
+    invalidFields.push('coreValue (invalid value; must be one of: ' + CORE_VALUES.join(', ') + ')');
+  }
+  if (!nomination.message) {
+    invalidFields.push('message');   
+  }
+
+  if (invalidFields.length > 0) {
+    validation.failed = true;
+  }
+
+  return validation;
+}
 
 async function insertNomination(nomination) {
   const database = await getDatabase();
   nomination.date = new Date();
+
+  // Get the user
+  let nominatorId = nomination.nominatorId;
+  let nominator = await getUserById(nominatorId);
+  console.log('insertNomination for nominator ' + nominatorId);
+  if (!nominator) {
+    console.error('insertNomination found no nominator with id ' + nominatorId);
+    return { success : false, message: 'No nominator found with nominator id ' + nominatorId };
+  }
+
+  // Decrement their points
+  nominator.points -= nomination.points;
+  // Throw an error if they don't actually have that many points
+  if (nominator.points < 0) {
+    console.error('Insufficient points to complete this nomination' );
+    return { success: false, message: 'Insufficient points to complete this nomination' };
+  }
+
+  // Save the user again
+  await updateUser(nominatorId, nominator);
+
   const {insertedId} = await database.collection(collectionName).insertOne(nomination);
-  return insertedId;
+  return { success: true, insertedId: insertedId };
 }
 
 async function getNominations() {
@@ -98,4 +156,5 @@ module.exports = {
   deleteNomination,
   updateNomination,
   insertDefaultNominations,
+  validateNomination
 };
