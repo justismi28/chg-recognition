@@ -1,6 +1,7 @@
 // ./src/database/rewards.js
 const {getDatabase} = require('./mongo');
 const {ObjectID} = require('mongodb');
+const {logger} = require('../logger');
 
 const collectionName = 'rewards';
 const chgSwag = 'CHG Swag';
@@ -27,7 +28,7 @@ async function deleteRewards(){
 
 async function insertAllRewards(){
     const database = await getDatabase();
-    console.log("inserting Rewards");
+    logger.debug('inserting Rewards');
     let rewardObj = [
         {_id: new ObjectID('5e729a3c6ea33327d2851b42'), name: 'CHG Hat', pointValue: 250, category: chgSwag, imageUrl: 'https://media.gettyimages.com/photos/red-baseball-cap-picture-id118358120?k=6&m=118358120&s=612x612&w=0&h=xAbpE_31KNSj2Mnw3qJHQSRf7OX81jTci3uX8FvQ4Cc='},
         {_id: new ObjectID('5e729a3c6ea33327d2851b43'), name: 'CHG HeadPhones', pointValue: 250, category: chgSwag, imageUrl: 'https://media.gettyimages.com/photos/headphones-picture-id171292342?k=6&m=171292342&s=612x612&w=0&h=s_-156ygoCOeQuKG1R2CT2gRYmL3yTR8QZhH9Xe4Hy4='},
@@ -44,7 +45,7 @@ async function insertAllRewards(){
     ];
     await database.collection(collectionName).insertMany(rewardObj, function(err, res){
         if (err) throw err;
-        console.log("Number of documents inserted: " + res.insertedCount);
+        logger.debug('Number of documents inserted: ' + res.insertedCount);
     })
 }
 

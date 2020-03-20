@@ -1,18 +1,19 @@
 var express = require('express');
 var router = express.Router();
+const {logger} = require('../logger');
 
 const {validateIdParam} = require('./validateIdParam');
-const{getRedemptionsforUser, insertRedemption, getAllRedemptions} = require('../database/redemptions');
+const{getRedemptionsforUser, insertRedemption, getAllRedemptions, deleteRedemption} = require('../database/redemptions');
 
 
 //get all redemptions listed in the system
 router.get('/', async (req, res) => {
-    console.log('getting redemptions')
+    logger.debug('getting redemptions')
     res.send(await getAllRedemptions());
 });
 
 router.get('/:id', async (req, res) => {
-    console.log('getting redemptions')
+    logger.debug('getting redemptions')
     if (!validateIdParam(req, res)) {
         return;
     }
@@ -33,11 +34,39 @@ router.post('/', async (req, res) =>{
         }
     }
     catch (e) {
-        console.error('Failure: ', e);
+        logger.error('Failure: ', e);
         res.status(500);
         res.send({message: '' + e});
     }
 })
+
+
+// endpoint to delete an nomination
+router.delete('/:id', async (req, res) => {
+    res.send({ message: 'Nomination Deleted.' });
+    let response = {};
+
+    if (!validateIdParam(req, res)) {
+        return;
+    }
+
+    try {
+        let deletedCount = await deleteRedemption(req.params.id);
+        if (deletedCount == 0) {
+            res.status(404);
+            response.message= 'Redemption not found';
+        }
+        else {
+            response.message= 'Redemption Deleted';
+        }
+    }
+    catch (error) {
+        logger.debug(error);
+        res.status(500);
+        response.message= 'Internal Error';
+    }
+    res.send(response);
+});
 
 module.exports = router;
 

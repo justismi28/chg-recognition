@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const {logger} = require('../logger');
 
 const {insertUser, getUsers, getUserById, deleteUser, updateUser, validateUser} = require('../database/users');
 const {validateIdParam} = require('./validateIdParam');
@@ -59,7 +60,7 @@ router.delete('/:id', async (req, res) => {
         }
     }
     catch (error) {
-        console.log(error);
+        logger.debug(error);
         res.status(500);
         response.message= 'Internal Error';
     }

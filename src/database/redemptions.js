@@ -1,10 +1,11 @@
 // ./src/database/redemptions.js
 const {getDatabase} = require('./mongo');
+const {ObjectID} = require('mongodb');
 const{getUserById, updateUser} = require('./users');
 const{getRewardsById} = require('./rewards');
+const {logger} = require('../logger');
 
 const collectionName = 'redemptions';
-const rewardsCollectionName = 'rewards';
 
 async function getAllRedemptions() {
   const database = await getDatabase();
@@ -23,6 +24,14 @@ async function insertRedemption(redemption) {
     const {insertedId} = await database.collection(collectionName).insertOne(redemption); 
     response.insertedId = insertedId;
     return response;
+}
+
+async function deleteRedemption(id) {
+    const database = await getDatabase();
+    const response = await database.collection(collectionName).deleteOne({
+        _id: new ObjectID(id),
+    });
+    return response.deletedCount;
 }
 
 async function updateUserPoints(redemption) {
@@ -53,7 +62,7 @@ async function updateUserPoints(redemption) {
     }
 
     user.points -= rewardPoints;
-    console.log('After redemption transaction user\'s new points are: ' + user.points);
+    logger.debug('After redemption transaction user\'s new points are: ' + user.points);
 
     // Save the user again
     await updateUser(redemption.userId, user);
@@ -67,4 +76,5 @@ module.exports = {
     getRedemptionsforUser,
     insertRedemption,
     getAllRedemptions,
+    deleteRedemption
 };

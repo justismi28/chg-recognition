@@ -1,6 +1,7 @@
 // ./src/database/mongo.js
 const {MongoMemoryServer} = require('mongodb-memory-server');
 const {MongoClient} = require('mongodb');
+const {logger} = require('../logger');
 
 let database = null;
 
@@ -9,12 +10,12 @@ async function startDatabase() {
   let mongoDBURL;
   if (MONGO_URL_ENV) {
     // Use external Mongo instance
-    console.log('Using external Mongo instance');
+    logger.debug('Using external Mongo instance');
     mongoDBURL = MONGO_URL_ENV;
   }
   else {
     // Use In-Memory Mongo
-    console.log('Using in-memory Mongo');
+    logger.debug('Using in-memory Mongo');
     const mongo = new MongoMemoryServer();
     mongoDBURL = await mongo.getConnectionString();
   }

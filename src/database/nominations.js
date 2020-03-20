@@ -1,6 +1,7 @@
 // ./src/database/nominations.js
 const {getDatabase} = require('./mongo');
 const {ObjectID} = require('mongodb');
+const {logger} = require('../logger');
 
 const{getUserById, updateUser} = require('./users');
 
@@ -50,9 +51,9 @@ async function insertNomination(nomination) {
   // Get the user
   let nominatorId = nomination.nominatorId;
   let nominator = await getUserById(nominatorId);
-  console.log('insertNomination for nominator ' + nominatorId);
+  logger.debug('insertNomination for nominator ' + nominatorId);
   if (!nominator) {
-    console.error('insertNomination found no nominator with id ' + nominatorId);
+    logger.error('insertNomination found no nominator with id ' + nominatorId);
     return { success : false, message: 'No nominator found with nominator id ' + nominatorId };
   }
 
@@ -60,7 +61,7 @@ async function insertNomination(nomination) {
   nominator.nominationPoints -= nomination.points;
   // Throw an error if they don't actually have that many points
   if (nominator.nominationPoints < 0) {
-    console.error('Insufficient nomination points to complete this nomination' );
+    logger.error('Insufficient nomination points to complete this nomination' );
     return { success: false, message: 'Insufficient nomination points to complete this nomination' };
   }
 
@@ -87,7 +88,7 @@ async function getMyNominations(nominee) {
     let nominatorId = nomination.nominatorId;
     let nominator = await getUserById(nominatorId);
     if (!nominator) {
-      console.log('No nominator found for nominator id ' + nomination.nominatorId);
+      logger.debug('No nominator found for nominator id ' + nomination.nominatorId);
     }
     else {
       nomination.nominator = {
@@ -114,9 +115,10 @@ async function getNominationsByNominee(nominee) {
 
 async function deleteNomination(id) {
     const database = await getDatabase();
-    await database.collection(collectionName).deleteOne({
+    const response = await database.collection(collectionName).deleteOne({
         _id: new ObjectID(id),
     });
+    return response.deletedCount;
 }
 
 async function updateNomination(id, nomination) {
@@ -135,14 +137,14 @@ async function updateNomination(id, nomination) {
 
 async function insertDefaultNominations(){
   const database = await getDatabase();
-  console.log("inserting nominations");
+  logger.debug("inserting nominations");
   let nominations = [
       {_id: new ObjectID('5e72a2176eb55d5560830859'), date: '2020-03-20T14:32:27Z', nominatorId: '5e729a3c6ea33327d2851b4f', nomineeId: '5e729a3c6ea33327d2851b50', points: 50, coreValue: 'Putting People First', message: 'Great job!'},
       {_id: new ObjectID('5e72a294a5047737cc06edf0'), date: '2020-03-20T13:05:52Z', nominatorId: '5e729a3c6ea33327d2851b50', nomineeId: '5e729a3c6ea33327d2851b4e', points: 50, coreValue: 'Quality & Professionalism', message: 'He does excellent work!'},
   ];
   await database.collection(collectionName).insertMany(nominations, function(err, res){
       if (err) throw err;
-      console.log("Number of documents inserted: " + res.insertedCount);
+      logger.debug("Number of documents inserted: " + res.insertedCount);
   })
 }
 

@@ -1,6 +1,7 @@
 // ./src/database/users.js
 const {getDatabase} = require('./mongo');
 const {ObjectID} = require('mongodb');
+const {logger} = require('../logger');
 
 const collectionName = 'users';
 
@@ -59,7 +60,7 @@ async function deleteUser(id) {
     const response = await database.collection(collectionName).deleteOne({
         _id: new ObjectID(id),
     });
-    console.log('Delete response ', response.deletedCount);
+    logger.debug('Delete response ', response.deletedCount);
     return response.deletedCount;
 }
 
@@ -78,7 +79,7 @@ async function updateUser(id, user) {
 
 async function insertDefaultUsers(){
   const database = await getDatabase();
-  console.log("inserting users");
+  logger.debug("inserting users");
   let users = [
       {"_id": new ObjectID("5e729a3c6ea33327d2851b4e"), name: 'Justin Smith', login: 'justin.smith@chghealthcare.com', points: 250, nominationPoints: 100},
       {"_id": new ObjectID("5e729a3c6ea33327d2851b4f"), name: 'Trevor Duersch', login: 'trevor.duersch@chghealthcare.com', points: 250, nominationPoints: 100},
@@ -87,7 +88,7 @@ async function insertDefaultUsers(){
   ];
   await database.collection(collectionName).insertMany(users, function(err, res){
         if (err) throw err;
-        console.log("Number of documents inserted: " + res.insertedCount);
+        logger.debug("Number of documents inserted: " + res.insertedCount);
     })
 }
 

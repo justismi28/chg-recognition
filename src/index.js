@@ -7,11 +7,11 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-const {insertUser} = require('./database/users');
 const nominationsRouter = require('./routes/nominations');
 const usersRouter = require('./routes/users');
 const rewardsRouter = require('./routes/rewards');
 const redeemRouter = require('./routes/redeem.js');
+const {logger} = require('./logger');
 
 const {startDatabase} = require('./database/mongo');
 const{insertAllRewards, getRewards} = require('./database/rewards');
@@ -72,6 +72,6 @@ startDatabase().then(async () => {
 
     // start the server
     app.listen(8081, async () => {
-      console.log('listening on port 8081');
+      logger.info('listening on port 8081');
     });
 });
