@@ -57,11 +57,11 @@ async function insertNomination(nomination) {
   }
 
   // Decrement their points
-  nominator.points -= nomination.points;
+  nominator.nominationPoints -= nomination.points;
   // Throw an error if they don't actually have that many points
-  if (nominator.points < 0) {
-    console.error('Insufficient points to complete this nomination' );
-    return { success: false, message: 'Insufficient points to complete this nomination' };
+  if (nominator.nominationPoints < 0) {
+    console.error('Insufficient nomination points to complete this nomination' );
+    return { success: false, message: 'Insufficient nomination points to complete this nomination' };
   }
 
   // Save the user again
