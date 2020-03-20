@@ -8,6 +8,7 @@ const collectionName = 'nominations';
 
 async function insertNomination(nomination) {
   const database = await getDatabase();
+  nomination.date = new Date();
   const {insertedId} = await database.collection(collectionName).insertOne(nomination);
   return insertedId;
 }
@@ -78,8 +79,8 @@ async function insertDefaultNominations(){
   const database = await getDatabase();
   console.log("inserting nominations");
   let nominations = [
-      {_id: new ObjectID('5e72a2176eb55d5560830859'), nominatorId: '5e729a3c6ea33327d2851b4f', nomineeId: '5e729a3c6ea33327d2851b50', points: 50, coreValue: 'Putting People First', message: 'Great job!'},
-      {_id: new ObjectID('5e72a294a5047737cc06edf0'), nominatorId: '5e729a3c6ea33327d2851b50', nomineeId: '5e729a3c6ea33327d2851b4e', points: 50, coreValue: 'Quality & Professionalism', message: 'He does excellent work!'},
+      {_id: new ObjectID('5e72a2176eb55d5560830859'), date: '2020-03-20T14:32:27Z', nominatorId: '5e729a3c6ea33327d2851b4f', nomineeId: '5e729a3c6ea33327d2851b50', points: 50, coreValue: 'Putting People First', message: 'Great job!'},
+      {_id: new ObjectID('5e72a294a5047737cc06edf0'), date: '2020-03-20T13:05:52Z', nominatorId: '5e729a3c6ea33327d2851b50', nomineeId: '5e729a3c6ea33327d2851b4e', points: 50, coreValue: 'Quality & Professionalism', message: 'He does excellent work!'},
   ];
   await database.collection(collectionName).insertMany(nominations, function(err, res){
       if (err) throw err;
