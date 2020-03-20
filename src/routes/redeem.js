@@ -23,8 +23,14 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) =>{
     try {
         const newRedemption = req.body;
-        let redemptionId = await insertRedemption(newRedemption);
-        res.send({ message: 'Request Redeemed and persisted.', id: redemptionId });
+        let response = await insertRedemption(newRedemption);
+        if (response.success) {
+            res.send({ message: 'Request Redeemed and persisted.', id: response.insertedId });
+        }
+        else {
+            res.status(400);
+            res.send({ message: response.message });
+        }
     }
     catch (e) {
         console.error('Failure: ', e);

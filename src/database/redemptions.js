@@ -18,13 +18,15 @@ async function getRedemptionsforUser(id){
 
 async function insertRedemption(redemption) {
     const database = await getDatabase();
-    await updateUserPoints(redemption);
-    redemption['created_date'] = Date.now();
+    let response = await updateUserPoints(redemption);
+    redemption['created_date'] = new Date();
     const {insertedId} = await database.collection(collectionName).insertOne(redemption); 
-    return insertedId;
+    response.insertedId = insertedId;
+    return response;
 }
 
 async function updateUserPoints(redemption) {
+    let response = {success: true};
     const database = await getDatabase();
 
     let getUserQuery = {_id: redemption.userId};
@@ -36,23 +38,27 @@ async function updateUserPoints(redemption) {
   
     let userPoints = user.points;
 
-    console.log('redemption: ' + JSON.stringify(redemption, null, 2));
     let reward = await getRewardsById(redemption.rewardId);
     if (!reward) {
-        throw new Error('Could not find reward for ' + redemption.rewardId);
+        response.success = false;
+        response.message = 'Could not find reward for ' + redemption.rewardId;
+        return response;
     }
     let rewardPoints = reward.pointValue;
 
     if(rewardPoints > userPoints){
-        throw new Error('Reward is worth more than the user has. Cancelling transation.')
+        response.success = false;
+        response.message = 'Reward is worth more than the user has. Cancelling transation.';
+        return response;
     }
 
     user.points -= rewardPoints;
     console.log('After redemption transaction user\'s new points are: ' + user.points);
 
-    
     // Save the user again
     await updateUser(redemption.userId, user);
+
+    return response;
 }
 
 
