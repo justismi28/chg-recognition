@@ -3,7 +3,7 @@ var router = express.Router();
 
 const {validateIdParam} = require('./validateIdParam');
 const {insertNomination, getNominations, getNominationsByNominator, getNominationsByNominee, 
-  getMyNominations, deleteNomination, updateNomination} = require('../database/nominations');
+  getMyNominations, deleteNomination, updateNomination, validateNomination} = require('../database/nominations');
 
 // defining an endpoint to return all nominations
 router.get('/', async (req, res) => {
@@ -34,8 +34,28 @@ router.get('/mine/:id', async (req, res) => {
   
 router.post('/', async (req, res) => {
     const newNomination = req.body;
-    await insertNomination(newNomination);
-    res.send({ message: 'New Nomination inserted.' });
+    const validation = validateNomination(newNomination, true);
+    if (validation.failed) {
+        res.status(400);
+        res.send({ message: 'Validation error; Missing or invalid fields: ' + validation.invalidFields.join(', ')});
+        return;
+    }
+
+    try {
+      let response = await insertNomination(newNomination);
+      if (!response.success) {
+        res.status(400);
+        res.send({message: response.message});
+        return;
+      }
+      res.send({ message: 'New Nomination inserted.', insertedId: response.insertedId });
+      return;
+    }
+    catch (e) {
+      console.error('Failure: ', e);
+      res.status(500);
+      res.send({message: '' + e});
+    }
 });
 
 // endpoint to delete an nomination
@@ -51,6 +71,12 @@ router.delete('/:id', async (req, res) => {
 // endpoint to update an nomination
 router.put('/:id', async (req, res) => {
     if (!validateIdParam(req, res)) {
+        return;
+    }
+    const validation = validateNomination(newNomination, false);
+    if (validation.failed) {
+        res.status(400);
+        res.send({ message: 'Missing or invalid fields: ' + validation.invalidFields.join(', ')});
         return;
     }
 
