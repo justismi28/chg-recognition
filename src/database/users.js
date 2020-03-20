@@ -14,10 +14,10 @@ function validateUser(user) {
   if (!user.login) {
     invalidFields.push('login');   
   }
-  if (!user.points) {
+  if (!(user.points >= 0)) {
     invalidFields.push('points');   
   }
-  if (!user.nominationPoints) {
+  if (!(user.nominationPoints >= 0)) {
     invalidFields.push('nominationPoints');   
   }
 

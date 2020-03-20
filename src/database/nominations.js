@@ -23,7 +23,7 @@ function validateNomination(nomination, isNew) {
   if (!nomination.nomineeId) {
     invalidFields.push('nomineeId');   
   }
-  if (!nomination.points) {
+  if (!(nomination.points >= 0)) {
     invalidFields.push('points');   
   }
   if (!nomination.coreValue) {
