@@ -32,13 +32,22 @@
             <nomination-container
                     v-for="n in nominations"
                     v-bind:nomination="n"
+                    v-bind:usersById="usersById"
                     v-bind:key="n._id"
             ></nomination-container>
         </ol>
     </div>
+    <div id="users">
+        Users
+        <ul>
+            <li v-for="u in users">
+                name: {{u.name}} id: {{u._id}}
+            </li>
+        </ul>
+    </div>
 </div>
 </body>
-<script type="application/javascript">
+<script type="application/ecmascript">
 
     Vue.component('todo-item', {
         props: ['todo'],
@@ -46,7 +55,7 @@
     })
 
     Vue.component('nomination-container', {
-        props: ['nomination'],
+        props: ['nomination', 'usersById'],
         template: '' +
             '<li class="nomination">' +
             '   <div class="core-value">{{ nomination.coreValue }}</div>' +
@@ -54,6 +63,7 @@
             '   <div class="points">{{ nomination.points }}</div>' +
             '   <div class="submittedBy">{{ nomination.nominatorId }}</div>' +
             '   <div class="nomineeId">{{ nomination.nomineeId }}</div>' +
+            // '   <div class="nomineeUser">{{ usersById //[nomination.nomineeId].name }}</div>' +
             '</li>'
     })
 
@@ -63,18 +73,13 @@
             message: 'New Todo item text',
             seen: true,
             showTodos: false,
+            users: [],
+            usersById: [],
 
             nominations: [
                 {"_id": "5e72a2176eb55d5560830859", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 50, "coreValue": "Putting People First", "message": "Great job!", "date": "2020-03-18T15:25:24.337Z"},
                 {"_id": "5eea7eef5629ff0012a2f4d4", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 1, "coreValue": "Putting People First", "message": "He's a spider 🕷️ and he's so awesome it blows my mind 🤯.", "date": "2020-06-17T20:37:03.630Z"},
                 {"_id": "5eea7f375629ff0012a2f4d5", "points": 1, "coreValue": "Putting People First", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "message": "Ryan just tried some 🤯 emojis 🥳🤩😍🥰", "date": "2020-06-17T20:38:14.790Z"}
-            ],
-
-            todos: [
-                {id:1, text: 'Add VueJs basics'},
-                {id:2, text: 'Add bootstrap basics'},
-                {id:3, text: 'Add back-end web calls'},
-                {id:4, text: 'Start with a full vue-cli project (just for kicks)'},
             ],
         },
         methods: {
@@ -87,7 +92,15 @@
         },
         mounted () {
             axios.get('https://chg-recognition.curtisporter.com/nominations/')
-                .then(response => (this.nominations = response.data))
+                .then((response) => (this.nominations = response.data))
+
+            axios.get('https://chg-recognition.curtisporter.com/users/')
+                .then(response =>  {
+                    this.users = response.data
+                    this.usersById = users.reduce(function(map, obj){map[obj._id] = obj; return map}, {})
+                    console.log(this.users.filter(user => user._id === '5e729a3c6ea33327d2851b4f'))
+                })
+
         }
     });
 </script>
