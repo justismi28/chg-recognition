@@ -68,8 +68,21 @@ async function insertNomination(nomination) {
   // Save the user again
   await updateUser(nominatorId, nominator);
 
+  await incrementNomineePoints(nomination);
+
   const {insertedId} = await database.collection(collectionName).insertOne(nomination);
   return { success: true, insertedId: insertedId };
+}
+
+async function incrementNomineePoints(nomination) {
+  let nomineeId = nomination.nomineeId;
+  let nominee = await getUserById(nomineeId);
+
+  nominee.points += nomination.points;
+
+  await updateUser(nomineeId, nominee);
+
+  return { success: true };
 }
 
 async function getNominations() {
