@@ -7,7 +7,8 @@
     <title>CHG Recognition</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js" integrity="sha256-NSuqgY2hCZJUN6hDMFfdxvkexI7+iLxXQbL540RQ/c4=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <style>
         .submittedBy, .nomineeId {
@@ -23,16 +24,7 @@
     <button v-on:click="reverseTodos">Reverse todos</button>
     <button v-on:click="addTodo">Add todo item</button>
     <hr>
-    <div id="todo" v-if="showTodos">
-        <ol>
-            <todo-item
-                    v-for="item in todos"
-                    v-bind:todo="item"
-                    v-bind:key="item.id"
-            ></todo-item>
-<!--            <li v-for="todo in todos">{{todo.text}}</li>-->
-        </ol>
-    </div>
+
 
     <div id="nominations">
         Nominations:
@@ -42,7 +34,6 @@
                     v-bind:nomination="n"
                     v-bind:key="n._id"
             ></nomination-container>
-            <!--            <li v-for="todo in todos">{{todo.text}}</li>-->
         </ol>
     </div>
 </div>
@@ -56,12 +47,13 @@
 
     Vue.component('nomination-container', {
         props: ['nomination'],
-        template: '<li class="nomination">'
-            + '<div class="core-value">{{ nomination.coreValue }}</div>'
-            + '<div class="message">{{ nomination.message }}</div>'
-            + '<div class="points">{{ nomination.points }}</div>'
-            + '<div class="submittedBy">{{ nomination.nominatorId }}</div>' +
-            '<div class="nomineeId">{{ nomination.nomineeId }}</div>' +
+        template: '' +
+            '<li class="nomination">' +
+            '   <div class="core-value">{{ nomination.coreValue }}</div>' +
+            '   <div class="message">{{ nomination.message }}</div>' +
+            '   <div class="points">{{ nomination.points }}</div>' +
+            '   <div class="submittedBy">{{ nomination.nominatorId }}</div>' +
+            '   <div class="nomineeId">{{ nomination.nomineeId }}</div>' +
             '</li>'
     })
 
@@ -94,13 +86,9 @@
             }
         },
         mounted () {
-            axios
-                .get('https://chg-recognition.curtisporter.com/nominations/')
-                .then(response => (this.info = response))
+            axios.get('https://chg-recognition.curtisporter.com/nominations/')
+                .then(response => (this.nominations = response.data))
         }
-
     });
-
-
 </script>
 </html>
