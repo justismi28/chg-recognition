@@ -1,0 +1,148 @@
+<!-- development version, includes helpful console warnings -->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>CHG Recognition</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js" integrity="sha256-NSuqgY2hCZJUN6hDMFfdxvkexI7+iLxXQbL540RQ/c4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>
+
+    </div>
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.0-beta.15/vue.cjs.js" integrity="sha256-QIaIUpgu6NPX73mxpJAyTtOaLRawVN+0FDnqF/4YW10=" crossorigin="anonymous"></script>-->
+    <style>
+        .submittedBy, .nomineeId {
+            font-size: xx-small;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <input v-model="message">
+    {{ message }}
+    <br>
+    <button v-on:click="reverseTodos">Reverse todos</button>
+    <button v-on:click="addTodo">Add todo item</button>
+    <hr>
+    <div id="todo" v-if="showTodos">
+        <ol>
+            <todo-item
+                    v-for="item in todos"
+                    v-bind:todo="item"
+                    v-bind:key="item.id"
+            ></todo-item>
+<!--            <li v-for="todo in todos">{{todo.text}}</li>-->
+        </ol>
+    </div>
+
+    <div id="nominations">
+        Nominations:
+        <ol>
+            <nomination-container
+                    v-for="n in nominations"
+                    v-bind:nomination="n"
+                    v-bind:key="n._id"
+            ></nomination-container>
+            <!--            <li v-for="todo in todos">{{todo.text}}</li>-->
+        </ol>
+    </div>
+</div>
+</body>
+<script type="application/javascript">
+
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+
+    Vue.component('nomination-container', {
+        props: ['nomination'],
+        template: '<li class="nomination">'
+            + '<div class="core-value">{{ nomination.coreValue }}</div>'
+            + '<div class="message">{{ nomination.message }}</div>'
+            + '<div class="points">{{ nomination.points }}</div>'
+            + '<div class="submittedBy">{{ nomination.nominatorId }}</div>' +
+            '<div class="nomineeId">{{ nomination.nomineeId }}</div>' +
+            '</li>'
+    })
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'New Todo item text',
+            seen: true,
+            showTodos: false,
+
+            nominations: [
+                {"_id": "5e72a2176eb55d5560830859", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 50, "coreValue": "Putting People First", "message": "Great job!", "date": "2020-03-18T15:25:24.337Z"},
+                {"_id": "5e72a294a5047737cc06edf0", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4e", "points": 50, "coreValue": "Quality & Professionalism", "message": "He does excellent work!", "date": "2020-03-19T10:05:22.000Z"},
+                {"_id": "5e73d05098f2ad49186f0c1f", "nominatorId": "5e73da771f9cbc4aa8663ae5", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 100, "coreValue": "Putting People First", "message": "Superb!", "date": "2020-03-19T12:32:00.000Z"},
+                {"_id": "5e73e478a802372b18fcb818", "nominatorId": "5e729a3c6ea33327d2851b4e", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 100, "coreValue": "Putting People First", "message": "Love it!", "date": "2020-03-19T14:53:00.000Z"},
+                {"_id": "5e73e496a802372b18fcb819", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 100, "coreValue": "Growth", "message": "Yeehaw!", "date": "2020-03-19T15:22:00.000Z"},
+                {"_id": "5e73ec1e4bbc3458b4fcb283", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 50, "coreValue": "Growth", "message": "Even better!", "date": "2020-03-19T15:36:00.000Z"},
+                {"_id": "5e73fd344bbc3458b4fcb284", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 1, "coreValue": "Growth", "message": "Awesome growth!", "date": "2020-03-20T11:05:00.000Z"},
+                {"_id": "5e74fb1974410b70f5e83859", "points": 18, "coreValue": "Putting People First", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e73da771f9cbc4aa8663ae5", "message": "Curtis is rocking our web service!", "date": "2020-03-20T17:19:21.699Z"},
+                {"_id": "5e74fbe274410b70f5e8385a", "points": 10, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "message": "Ryan is cool!", "date": "2020-03-20T17:22:42.235Z"},
+                {"_id": "5e74fffd74410b70f5e8385b", "points": 15, "coreValue": "Putting People First", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b4e", "message": "Because Justin just thinks of everybody ", "date": "2020-03-20T17:40:13.690Z"},
+                {"_id": "5e75011bc563a603bf2f9ead", "points": 10, "coreValue": "Growth", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e73d43485e1923bf08a1a74", "message": "Growing the app and the service", "date": "2020-03-20T17:44:59.853Z"},
+                {"_id": "5e750167c563a603bf2f9eae", "points": 10, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e73da771f9cbc4aa8663ae5", "message": "Lots of quality and Professionalism", "date": "2020-03-20T17:46:15.724Z"},
+                {"_id": "5e75025bc563a603bf2f9eb0", "nominatorId": "5e729a3c6ea33327d2851b4e", "nomineeId": "5e73da771f9cbc4aa8663ae5", "points": 23, "coreValue": "Growth", "message": "Absolutely crushing the Hack-A-Thon!", "date": "2020-03-20T17:50:19.484Z"},
+                {"_id": "5e75033e85deb9078e4bdaa9", "points": 1, "coreValue": "Continuous Improvement", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e73d43485e1923bf08a1a74", "message": "This is a test!", "date": "2020-03-20T17:54:06.653Z"},
+                {"_id": "5e75039e85deb9078e4bdaaa", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 50, "coreValue": "Growth", "message": "Even better!", "date": "2020-03-20T17:55:42.691Z"},
+                {"_id": "5e7505e1d6e5a30b5aa73bbf", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 5, "coreValue": "Growth", "message": "Even better!", "date": "2020-03-20T18:05:21.736Z"},
+                {"_id": "5e753b781a48432c73c57922", "points": 303, "coreValue": "Integrity & Ethics", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "message": "Ryan just tells the truth!", "date": "2020-03-20T21:54:00.192Z"},
+                {"_id": "5e753bb51a48432c73c57929", "points": 100, "coreValue": "Putting People First", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b4e", "message": "He just does!", "date": "2020-03-20T21:55:01.154Z"},
+                {"_id": "5e753c191a48432c73c5792c", "points": 470, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e73da771f9cbc4aa8663ae5", "message": "Because Curtis rocks at backend development and things are working!", "date": "2020-03-20T21:56:41.424Z"},
+                {"_id": "5e7549fc8c438938038a95ee", "points": 804, "coreValue": "Integrity & Ethics", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b4e", "message": "Test", "date": "2020-03-20T22:55:56.589Z"},
+                {"_id": "5e754a0a8c438938038a95f0", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e73da771f9cbc4aa8663ae5", "points": "1", "coreValue": "Putting People First", "message": "Reason", "date": "2020-03-20T22:56:10.965Z"},
+                {"_id": "5e754a6c8c438938038a95f2", "points": 10069, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "message": "Ryan got it working at the end!", "date": "2020-03-20T22:57:48.391Z"},
+                {"_id": "5e754b1d8c438938038a95f4", "nominatorId": "5e729a3c6ea33327d2851b4e", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 130, "coreValue": "Growth", "message": "Absolutely crushing the Hack-A-Thon!", "date": "2020-03-20T23:00:44.971Z"},
+                {"_id": "5e754d3db635673d9ee6b146", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 1, "coreValue": "Putting People First", "message": "Reason", "date": "2020-03-20T23:09:49.057Z"},
+                {"_id": "5e754dd1b635673d9ee6b147", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 2, "coreValue": "Continuous Improvement", "message": "Reason", "date": "2020-03-20T23:12:17.784Z"},
+                {"_id": "5e754de3b635673d9ee6b148", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 1, "coreValue": "Putting People First", "message": "Reason", "date": "2020-03-20T23:12:35.304Z"},
+                {"_id": "5e754e58b635673d9ee6b149", "points": 9067, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e752a0652f74022c12e00a9", "message": "Super sad no points", "date": "2020-03-20T23:14:32.537Z"},
+                {"_id": "5e755133b635673d9ee6b14b", "points": 955, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e752a0652f74022c12e00a9", "message": "Yes we can do it ", "date": "2020-03-20T23:26:43.451Z"},
+                {"_id": "5e755435b635673d9ee6b14d", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 22, "coreValue": "Growth", "message": "Reason", "date": "2020-03-20T23:39:33.617Z"},
+                {"_id": "5e78d6c2b635673d9ee6b155", "points": 1978, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e73da771f9cbc4aa8663ae5", "message": "Fudhgch", "date": "2020-03-23T15:33:22.672Z"},
+                {"_id": "5e8793fab635673d9ee6b159", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4e", "points": 117, "coreValue": "Quality & Professionalism", "message": "Reason", "date": "2020-04-03T19:52:26.033Z"},
+                {"_id": "5e8794a4b635673d9ee6b15b", "points": 611, "coreValue": "Quality & Professionalism", "nominatorId": "5e729a3c6ea33327d2851b4e", "nomineeId": "5e729a3c6ea33327d2851b4e", "message": "He just rocks!", "date": "2020-04-03T19:55:16.292Z"},
+                {"_id": "5eea36acce51380012b8fbbd", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 76, "coreValue": "Continuous Improvement", "message": "Reason", "date": "2020-06-17T15:28:44.009Z"},
+                {"_id": "5eea3b2acf2fe400127da5ff", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 5, "coreValue": "Growth", "message": "Even better!", "date": "2020-06-17T15:47:53.964Z"},
+                {"_id": "5eea3e175629ff0012a2f4c1", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 5, "coreValue": "Growth", "message": "Even better!", "date": "2020-06-17T16:00:22.909Z"},
+                {"_id": "5eea3e255629ff0012a2f4c2", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 5, "coreValue": "Growth", "message": "Even better!", "date": "2020-06-17T16:00:36.890Z"},
+                {"_id": "5eea3e365629ff0012a2f4c3", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 5, "coreValue": "Growth", "message": "Even better!", "date": "2020-06-17T16:00:54.098Z"},
+                {"_id": "5eea7ce35629ff0012a2f4cf", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 40, "coreValue": "Growth", "message": "Reason", "date": "2020-06-17T20:28:19.244Z"},
+                {"_id": "5eea7d555629ff0012a2f4d0", "points": 244, "coreValue": "Integrity & Ethics", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b4f", "message": "This is a long reason and we are making sure it works!", "date": "2020-06-17T20:30:13.270Z"},
+                {"_id": "5eea7db85629ff0012a2f4d1", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 1, "coreValue": "Integrity & Ethics", "message": "Reason", "date": "2020-06-17T20:31:52.154Z"},
+                {"_id": "5eea7e645629ff0012a2f4d2", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 1, "coreValue": "Putting People First", "message": "People are always put first 🙃", "date": "2020-06-17T20:34:43.812Z"},
+                {"_id": "5eea7e9b5629ff0012a2f4d3", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 1, "coreValue": "Putting People First", "message": "Please tell me that this didn't come through as \"reason\" again.", "date": "2020-06-17T20:35:39.253Z"},
+                {"_id": "5eea7eef5629ff0012a2f4d4", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 1, "coreValue": "Putting People First", "message": "He's a spider 🕷️ and he's so awesome it blows my mind 🤯.", "date": "2020-06-17T20:37:03.630Z"},
+                {"_id": "5eea7f375629ff0012a2f4d5", "points": 1, "coreValue": "Putting People First", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "message": "Ryan just tried some 🤯 emojis 🥳🤩😍🥰", "date": "2020-06-17T20:38:14.790Z"}
+            ],
+
+            todos: [
+                {id:1, text: 'Add VueJs basics'},
+                {id:2, text: 'Add bootstrap basics'},
+                {id:3, text: 'Add back-end web calls'},
+                {id:4, text: 'Start with a full vue-cli project (just for kicks)'},
+            ],
+        },
+        methods: {
+            reverseTodos: function () {
+                this.todos.reverse()
+            },
+            addTodo: function () {
+                this.todos.push({text: this.message})
+            }
+        },
+        mounted () {
+            axios
+                .get('https://chg-recognition.curtisporter.com/nominations/')
+                .then(response => (this.nominations = response))
+        }
+    });
+
+
+</script>
+</html>
