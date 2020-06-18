@@ -7,6 +7,7 @@
     <title>CHG Recognition</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js" integrity="sha256-NSuqgY2hCZJUN6hDMFfdxvkexI7+iLxXQbL540RQ/c4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue2-filters/dist/vue2-filters.min.js"></script>
 <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -74,7 +75,7 @@
         <h1>Nominations</h1>
         <div class="card-list">
         <nomination-card
-                v-for="n in nominations"
+                v-for="n in orderBy(nominations, 'date', -1)"
                 v-bind:nomination="n"
                 v-bind:nominator="usersById[n.nominatorId]"
                 v-bind:nominee="usersById[n.nomineeId]"
@@ -111,12 +112,17 @@
         props: ['nomination', 'nominator', 'nominee'],
         template: '' +
             '<div class="card mt-3" style="width: 30rem;">' +
-            '   <div class="row">' +
-            '       <div class="col-md-12 nominee" style="color: #F48221; text-align: center; font-weight: bold">{{ nominee.name }}</div>' +
-            '       <div class="col-md-8 core-value" style="color: #00A3E4">{{ nomination.coreValue }}</div>' +
-            '       <div class="col-md-4 points" style="color: #82B941; font-weight: bold">{{ nomination.points }} Points</div>' +
+            '   <div class="row" data-toggle="collapse">' +
+            '       <div class="col-md-8 nominee" style="color: #F48221; font-weight: bold">' + 
+            '           <a data-toggle="collapse" :href="\'#test-data\' + nomination._id" aria-expanded="true" aria-controls="test-block" style="font-size: small">\u25BC</a>' +
+            '           <span style="font-size: xx-large">{{ nominee.name }}</span>' +
+            '       </div>' +
+            '       <div class="col-md-4 points" style="color: #82B941; text-align: right; font-size: large; font-weight: bold">+{{ nomination.points }}</div>' +
+            '       <div class="col-md-8 core-value" style="color: #00A3E4; font-size: small">{{ nomination.coreValue }}</div>' +
+            '       <div class="col-md-4 date" style="text-align: right; font-size: small">{{ nomination.date | formatDate }}</div>' +
+            '   </div>' +
+            '   <div :id="\'test-data\' + nomination._id" class="row collapse">' +
             '       <div class="col-md-8 nominator" style="font-size: small">Nominated by {{ nominator.name }}</div>' +
-            '       <div class="col-md-4 date" style="font-size: small">{{ nomination.date | formatDate }}</div>' +
             '       <div class="col-md-12 message">{{ nomination.message }}</div>' +
             '   </div>' +
             '</div>'
@@ -133,6 +139,7 @@
 
             nominations: [],
         },
+        mixins: [Vue2Filters.mixin],
 
         mounted () {
             axios.get('https://chg-recognition.curtisporter.com/nominations/')
