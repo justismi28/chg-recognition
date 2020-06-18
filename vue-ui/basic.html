@@ -133,8 +133,14 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
+                <label>Your Name</label>
+                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="YOUR name (nominator)?" v-model="nominator"></v-select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label for="Nominee">Nominee Name</label>
-                <v-select :options="users" label="name" name="Nominee" :reduce="user => user._id"></v-select>
+                <v-select :options="users"  name="Nominee" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
             </div>
         </div>
         <div class="form-row">
