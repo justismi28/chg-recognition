@@ -47,9 +47,7 @@
     <br>
     <hr>
 
-
-
-    <nomination-form></nomination-form>
+    <nomination-form v-bind:users="users"></nomination-form>
 
     <div id="users" class="table">
         <h1>Users </h1>
@@ -93,6 +91,7 @@
 <script type="application/ecmascript">
 
     Vue.component('nomination-form', {
+        props: ['users'],
         data: function () {
             return {
                 "coreValueCategory": null,
