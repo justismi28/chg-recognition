@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
 
 // endpoint to get the nominations for the logged in user
 router.get('/mine/:id', async (req, res) => {
-    logger.debug('Getting my nominations for ', req.params.id);
+    logger.debug('Getting my nominations for ' + req.params.id);
 
     if (!validateIdParam(req, res)) {
         return;
@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
       return;
     }
     catch (e) {
-      logger.error('Failure: ', e);
+      logger.error('Failure: ' + e);
       res.status(500);
       res.send({message: '' + e});
     }

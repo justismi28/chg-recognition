@@ -1,0 +1,73 @@
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+
+/* The navbar container */
+.topnav {
+    overflow: hidden;
+    background-color: #333333;
+}
+
+/* Navbar links */
+.topnav a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Links - change color on hover */
+.topnav a:hover {
+    background-color: #DDDDDD;
+    color: black;
+}
+
+.side {
+    float: left;
+    width: 25%;
+}
+
+.middle {
+    float: left;
+    width: 50%;
+}
+
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
+@media screen and (max-width: 800px) {
+  .column {   
+    width: 100%;
+    padding: 0;
+  }
+
+  .middle {   
+    width: 100%;
+    padding: 0;
+  }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.recognition  {
+    color: #00A3E4;
+/*    font-size: 30px; */
+    font-size: x-large;
+    font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", 
+  Helvetica, Arial, "Lucida Grande", sans-serif;
+}
