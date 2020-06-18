@@ -44,14 +44,12 @@
     <input v-model="message">
     {{ message }}
     <br>
-    <button v-on:click="reverseTodos">Reverse todos</button>
-    <button v-on:click="addTodo">Add todo item</button>
     <hr>
 
 
 
     <div id="users">
-        Users like {{usersById[users[0]._id].name}}
+        <h1>Users </h1> like {{usersById[users[0]._id].name}}
         <ul>
             <li v-for="u in users">
                 name: {{u.name}} id: {{u._id}}
@@ -59,33 +57,46 @@
         </ul>
     </div>
 
+    <button-counter title="blah"></button-counter>
+    <button-counter></button-counter>
+
     <div id="nominations">
         <h1>Nominations</h1>
         <ul>
-            <nomination-container
+            <nomination-card
                     v-for="n in nominations"
                     v-bind:nomination="n"
-                    v-bind:usersByIdMap="usersById"
+                    v-bind:nominator="usersById[n.nominatorId]"
+                    v-bind:nominee="usersById[n.nomineeId]"
                     v-bind:key="n._id"
-            ></nomination-container>
+            >
+                <button-counter></button-counter>
+
+            </nomination-card>
         </ul>
     </div>
 </div>
 </body>
 <script type="application/ecmascript">
 
+    Vue.component('button-counter', {
+        props: ['title'],
+        data: function () {
+            return {count: 0}
+        },
+        template: '<button v-on:click="count++"><b v-if="title">{{title}}:</b> You clicked me {{count}} times.</button>'
+    })
 
-    Vue.component('nomination-container', {
-        props: ['nomination', 'usersByIdMap'],
+    Vue.component('nomination-card', {
+        props: ['nomination', 'nominator', 'nominee'],
         template: '' +
             '<li class="nomination">' +
             '   <div class="core-value">{{ nomination.coreValue }}</div>' +
             '   <div class="message">{{ nomination.message }}</div>' +
             '   <div class="points">{{ nomination.points }}</div>' +
-            '   <div class="submittedBy">{{ nomination.nominatorId }}</div>' +
-            '   <div class="nomineeId">{{ nomination.nomineeId }}</div>' +
             '   <div class="date">{{ nomination.date }}</div>' +
-            // '   <div class="nomineeUser">{{ usersByIdMap["5e729a3c6ea33327d2851b4f"].name }}</div>' +
+            '   <div class="nominator">Nominator: {{ nominator.name }}</div>' +
+            '   <div class="nominee">Nominee: {{ nominee.name }}</div>' +
             '</li>'
     })
 
