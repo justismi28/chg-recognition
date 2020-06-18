@@ -26,17 +26,7 @@
     <hr>
 
 
-    <div id="nominations">
-        Nominations:
-        <ul>
-            <nomination-container
-                    v-for="n in nominations"
-                    v-bind:nomination="n"
-                    v-bind:usersById="usersById"
-                    v-bind:key="n._id"
-            ></nomination-container>
-        </ul>
-    </div>
+
     <div id="users">
         Users like {{usersById[users[0]._id].name}}
         <ul>
@@ -45,13 +35,25 @@
             </li>
         </ul>
     </div>
+
+    <div id="nominations">
+        <h1>Nominations</h1>
+        <ul>
+            <nomination-container
+                    v-for="n in nominations"
+                    v-bind:nomination="n"
+                    v-bind:usersByIdMap="usersById"
+                    v-bind:key="n._id"
+            ></nomination-container>
+        </ul>
+    </div>
 </div>
 </body>
 <script type="application/ecmascript">
 
 
     Vue.component('nomination-container', {
-        props: ['nomination', 'usersById'],
+        props: ['nomination', 'usersByIdMap'],
         template: '' +
             '<li class="nomination">' +
             '   <div class="core-value">{{ nomination.coreValue }}</div>' +
@@ -60,7 +62,7 @@
             '   <div class="submittedBy">{{ nomination.nominatorId }}</div>' +
             '   <div class="nomineeId">{{ nomination.nomineeId }}</div>' +
             '   <div class="date">{{ nomination.date }}</div>' +
-            '   <div class="nomineeUser" v-if="usersById">{{ usersById["5e729a3c6ea33327d2851b4f"].name }}</div>' +
+            // '   <div class="nomineeUser">{{ usersByIdMap["5e729a3c6ea33327d2851b4f"].name }}</div>' +
             '</li>'
     })
 
@@ -73,11 +75,7 @@
             users: [],
             usersById: {},
 
-            nominations: [
-                {"_id": "5e72a2176eb55d5560830859", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "points": 50, "coreValue": "Putting People First", "message": "Great job!", "date": "2020-03-18T15:25:24.337Z"},
-                {"_id": "5eea7eef5629ff0012a2f4d4", "nominatorId": "5e729a3c6ea33327d2851b50", "nomineeId": "5e729a3c6ea33327d2851b4f", "points": 1, "coreValue": "Putting People First", "message": "He's a spider.", "date": "2020-06-17T20:37:03.630Z"},
-                {"_id": "5eea7f375629ff0012a2f4d5", "points": 1, "coreValue": "Putting People First", "nominatorId": "5e729a3c6ea33327d2851b4f", "nomineeId": "5e729a3c6ea33327d2851b50", "message": "Ryan just tried something.", "date": "2020-06-17T20:38:14.790Z"}
-            ],
+            nominations: [],
         },
 
         mounted () {
