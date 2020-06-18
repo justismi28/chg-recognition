@@ -123,7 +123,6 @@
                 <small id="coreValueHelp" class="form-text text-muted">Select the CHG core value that most describes what this person did</small>
             </div>
         </div>
-
         <div class="form-row">
             <div class="form-group col-md-1">
                 <label for="points">Points</label>
@@ -139,19 +138,18 @@
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label for="Nominee">Nominee Name</label>
-                <v-select :options="users"  name="Nominee" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
+                <label>Nominee Name</label>
+                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
+            </div>
+        </div>
+        <div class="form-row" v-show="nominee">
+            <div class="form-group col-md-6">
+                <textarea class="form-control" v-model="message" v-bind:placeholder="'Describe why you are nominating ' + nominee"></textarea>
             </div>
         </div>
         <div class="form-row">
-            <div class="form-group col-md-6"></div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6"></div>
-        </div>
-        <div class="form-row">
             <div class="form-group">
-                <button v-on:click="submitNomination()" class="btn btn-primary">Submit</button>
+                <button v-on:click="submitNomination()" class="btn btn-primary btn-lg btn-block">Submit</button>
                 <br>
             </div>
         </div>
