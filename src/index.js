@@ -12,6 +12,7 @@ const usersRouter = require('./routes/users');
 const rewardsRouter = require('./routes/rewards');
 const redeemRouter = require('./routes/redeem.js');
 const {logger} = require('./logger');
+const verifyJwt = require('./jwt-verification/verifyJwt');
 
 const {startDatabase} = require('./database/mongo');
 const{insertAllRewards, getRewards} = require('./database/rewards');
@@ -31,6 +32,7 @@ const app = express();
 // swagger doc endpoint 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.use(verifyJwt.verify);
 
 // adding Helmet to enhance security
 app.use(helmet());
