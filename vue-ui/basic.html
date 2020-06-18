@@ -48,6 +48,8 @@
 
 
 
+    <nomination-form></nomination-form>
+
     <div id="users" class="table">
         <h1>Users </h1>
         <table>
@@ -70,11 +72,11 @@
         </table>
     </div>
 
-    <button-counter title="blah"></button-counter>
-    <button-counter></button-counter>
-
     <div id="nominations">
         <h1>Nominations</h1>
+
+
+
         <ul>
             <nomination-card
                     v-for="n in nominations"
@@ -83,7 +85,6 @@
                     v-bind:nominee="usersById[n.nomineeId]"
                     v-bind:key="n._id"
             >
-                <button-counter></button-counter>
 
             </nomination-card>
         </ul>
@@ -92,25 +93,81 @@
 </body>
 <script type="application/ecmascript">
 
-    Vue.component('button-counter', {
-        props: ['title'],
+    Vue.component('nomination-form', {
         data: function () {
-            return {count: 0}
+            return {
+                "coreValueCategory": null,
+                "nominator": null,
+                "nominee": null,
+                "points": 50,
+                "message": null,
+                title: null,
+                showNominationForm: true,
+                coreValueOptions: [ "Putting People First", "Quality & Professionalism", "Growth", "Continuous Improvement", "Integrity & Ethics"]
+            }
         },
-        template: '<button v-on:click="count++"><b v-if="title">{{title}}:</b> You clicked me {{count}} times.</button>'
+        template: `
+<div>
+    <button v-on:click="showNominationForm = !showNominationForm">Nomination Form</button>
+    <form v-show="showNominationForm">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="coreValInput">Core Value</label>
+                <select name="coreValInput" id="coreValInput" class="form-control"
+                        aria-describedby="Core value selection" v-model="coreValueCategory">
+                    <option v-for="o in coreValueOptions" value="{{o}}">{{o}}</option>
+                </select>
+                <small id="coreValueHelp" class="form-text text-muted">Select the CHG core value that most describes what this person did</small>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-1">
+                <label for="points">Points</label>
+                <input v-model="points" step=5 type="number" min="50" max="1234" name="points" id="points" class="form-control" aria-describedby="Points given" />
+                <small class="form-text text-muted">How many of your points do you want to gift?</small>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <button v-on:click="submitNomination()" class="btn btn-primary">Submit</button>
+                <br>
+            </div>
+        </div>
+
+    </form>
+</div>
+        `,
+        methods: {
+            submitNomination() {
+                window.confirm('Submit this nomination?') && alert('submitted')
+            }
+        }
     })
 
     Vue.component('nomination-card', {
         props: ['nomination', 'nominator', 'nominee'],
-        template: '' +
-            '<li class="nomination-card">' +
-            '   <div class="core-value">{{ nomination.coreValue }}</div>' +
-            '   <div class="message">{{ nomination.message }}</div>' +
-            '   <div class="points">{{ nomination.points }}</div>' +
-            '   <div class="date">{{ nomination.date }}</div>' +
-            '   <div class="nominator">Nominator: {{ nominator.name }}</div>' +
-            '   <div class="nominee">Nominee: {{ nominee.name }}</div>' +
-            '</li>'
+        template: `
+            <li class="nomination-card" v-if="nomination">
+               <div class="core-value">{{ nomination.coreValue }}</div>
+               <div class="message">{{ nomination.message }}</div>
+               <div class="points">{{ nomination.points }}</div>
+               <div class="date">{{ nomination.date }}</div>
+               <div class="nominator" v-if="nominator">Nominator: {{ nominator.name }}</div>
+               <div class="nominee" v-if="nominee">Nominee: {{ nominee.name }}</div>
+            </li>
+        `
     })
 
     var app = new Vue({
@@ -121,7 +178,7 @@
             showTodos: false,
             users: [],
             usersById: {},
-
+            showNominationForm: false,
             nominations: [],
         },
 
@@ -132,7 +189,7 @@
             axios.get('https://chg-recognition.curtisporter.com/users/')
                 .then(response =>  {
                     this.users = response.data
-                    this.usersById = this.users.reduce(function(usersById, obj){usersById[obj._id] = obj; return usersById}, {})
+                    this.usersById = this.users.reduce(function(usersById, user){usersById[user._id] = user; return usersById}, {})
                     console.log(this.users.filter(user => user._id === '5e729a3c6ea33327d2851b4f'))
                 })
 
