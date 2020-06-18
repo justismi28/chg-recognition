@@ -27,15 +27,12 @@
 <body>
 <div class="header">
     <div class="row">
-        <div class="side">
+        <div class="col-sm-4 col-md-3">
             <img src="assets/logo.png"/>
             <div class="recognition">Recognition</div>
         </div>
-        <div class="middle">
-            Welcome to CHG Recognition
-        </div>
-        <div class="side">
-            Hello
+        <div class="col-sm-8 col-md-9 header-text">
+            Nomination History
         </div>
     </div>
 </div>
@@ -75,18 +72,19 @@
 
     <div id="nominations">
         <h1>Nominations</h1>
-        <ul>
-            <nomination-card
-                    v-for="n in nominations"
-                    v-bind:nomination="n"
-                    v-bind:nominator="usersById[n.nominatorId]"
-                    v-bind:nominee="usersById[n.nomineeId]"
-                    v-bind:key="n._id"
-            >
-                <button-counter></button-counter>
+        <div class="card-list">
+        <nomination-card
+                v-for="n in nominations"
+                v-bind:nomination="n"
+                v-bind:nominator="usersById[n.nominatorId]"
+                v-bind:nominee="usersById[n.nomineeId]"
+                v-bind:key="n._id"
+                class="nomination-card"
+        >
+            <button-counter></button-counter>
 
-            </nomination-card>
-        </ul>
+        </nomination-card>
+        </div>
     </div>
 </div>
 </body>
@@ -100,17 +98,28 @@
         template: '<button v-on:click="count++"><b v-if="title">{{title}}:</b> You clicked me {{count}} times.</button>'
     })
 
+    Vue.filter('formatDate', function(value) {
+        if (value) {
+            const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'numeric', day: 'numeric' }) 
+            const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat.formatToParts(new Date(String(value)))
+
+            return `${month}/${day}/${year}`
+        }
+    })
+
     Vue.component('nomination-card', {
         props: ['nomination', 'nominator', 'nominee'],
         template: '' +
-            '<li class="nomination-card">' +
-            '   <div class="core-value">{{ nomination.coreValue }}</div>' +
-            '   <div class="message">{{ nomination.message }}</div>' +
-            '   <div class="points">{{ nomination.points }}</div>' +
-            '   <div class="date">{{ nomination.date }}</div>' +
-            '   <div class="nominator">Nominator: {{ nominator.name }}</div>' +
-            '   <div class="nominee">Nominee: {{ nominee.name }}</div>' +
-            '</li>'
+            '<div class="card mt-3" style="width: 30rem;">' +
+            '   <div class="row">' +
+            '       <div class="col-md-12 nominee" style="color: #F48221; text-align: center; font-weight: bold">{{ nominee.name }}</div>' +
+            '       <div class="col-md-8 core-value" style="color: #00A3E4">{{ nomination.coreValue }}</div>' +
+            '       <div class="col-md-4 points" style="color: #82B941; font-weight: bold">{{ nomination.points }} Points</div>' +
+            '       <div class="col-md-8 nominator" style="font-size: small">Nominated by {{ nominator.name }}</div>' +
+            '       <div class="col-md-4 date" style="font-size: small">{{ nomination.date | formatDate }}</div>' +
+            '       <div class="col-md-12 message">{{ nomination.message }}</div>' +
+            '   </div>' +
+            '</div>'
     })
 
     var app = new Vue({
