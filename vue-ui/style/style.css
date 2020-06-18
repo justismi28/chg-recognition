@@ -72,3 +72,11 @@ img {
 .card-list {
     padding: 8px;
 }
+
+.card-collapser .fa {
+  transition: .3s transform ease-in-out;
+}
+.card-collapser .collapsed .fa {
+  transform: rotate(-90deg);
+}
+
