@@ -167,21 +167,28 @@
     Vue.component('nomination-card', {
         props: ['nomination', 'nominator', 'nominee'],
         template: `
-           <div class="card card-collapser mt-3" style="width: 30rem;">
-              <a data-toggle="collapse" class="collapsed" :href="\'#test-data\' + nomination._id" aria-expanded="true" aria-controls="test-block" style="font-size: small"><i class="fa fa-chevron-down pull-left"></i></a>
-              <div class="row" data-toggle="collapse">
-                  <div class="col-md-8 nominee" style="color: #F48221; font-weight: bold">
-                      <span style="font-size: xx-large">{{ nominee.name }}</span>
-                  </div>
-                  <div class="col-md-4 points" style="color: #82B941; text-align: right; font-size: large; font-weight: bold">+{{ nomination.points }}</div>
-                  <div class="col-md-8 core-value" style="color: #00A3E4; font-size: small">{{ nomination.coreValue }}</div>
-                  <div class="col-md-4 date" style="text-align: right; font-size: small">{{ nomination.date | formatDate }}</div>
-              </div>
-              <div :id="\'test-data\' + nomination._id" class="row collapse">
-                  <div class="col-md-8 nominator" style="font-size: small">Nominated by {{ nominator.name }}</div>
-                  <div class="col-md-12 message">{{ nomination.message }}</div>
-              </div>
-           </div>
+            <div class="card card-collapser mt-3" style="width: 30rem;">
+                <div class="row" data-toggle="collapse">
+                    <div class="col-md-8 nominee" style="color: #F48221; font-weight: bold">
+                        <span style="font-size: xx-large">{{ nominee.name }}</span>
+                    </div>
+                    <div class="col-md-3 points" style="color: #82B941; text-align: right; font-size: large; font-weight: bold">
+                      +{{ nomination.points }}<br/><span style="color: black; font-size: small; font-weight: normal">{{ nomination.date | formatDate }}</span>
+                    </div>
+                    <div class="col-md-1" style="text-align: right; font-size: small">
+                      <a data-toggle="collapse" class="collapsed" :href="'#test-data' + nomination._id" aria-expanded="true" aria-controls="test-block" style="font-size: small"><i class="fa fa-chevron-down pull-right"></i></a>
+                    </div>
+                    <div class="col-md-8 core-value" style="color: #00A3E4; font-size: small">{{ nomination.coreValue }}</div>
+                    <div class="col-md-3 date" style="text-align: right; font-size: small">
+                    </div>
+                    <div class="col-md-1" style="text-align: right; font-size: small">
+                    </div>
+                </div>
+                <div :id="'test-data' + nomination._id" class="row collapse">
+                    <div class="col-md-8 nominator" style="font-size: small">Nominated by {{ nominator.name }}</div>
+                    <div class="col-md-12 message">{{ nomination.message }}</div>
+                </div>
+             </div>
 `
     })
 

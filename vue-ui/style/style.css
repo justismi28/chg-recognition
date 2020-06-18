@@ -64,7 +64,7 @@ img {
 
 .nomination-card {
     /* color: #F48221; */
-    background-color: #EEEEEE;
+    background-color: #F0F0F0;
     font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     padding: 8px;
 }
@@ -77,6 +77,6 @@ img {
   transition: .3s transform ease-in-out;
 }
 .card-collapser .collapsed .fa {
-  transform: rotate(-90deg);
+  transform: rotate(90deg);
 }
 
