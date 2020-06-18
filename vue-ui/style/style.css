@@ -3,7 +3,6 @@
     padding: 20px;
 }
 
-
 /* The navbar container */
 .topnav {
     overflow: hidden;
@@ -44,19 +43,6 @@
   clear: both;
 }
 
-/* Responsive layout - when the screen is less than 800px wide, make the two columns stack on top of each other instead of next to each other */
-@media screen and (max-width: 800px) {
-  .column {   
-    width: 100%;
-    padding: 0;
-  }
-
-  .middle {   
-    width: 100%;
-    padding: 0;
-  }
-}
-
 img {
     max-width: 100%;
     height: auto;
@@ -66,8 +52,31 @@ img {
 
 .recognition  {
     color: #00A3E4;
-/*    font-size: 30px; */
     font-size: x-large;
-    font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", 
-  Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
+
+.header-text  {
+    color: #F48221;
+    font-size: x-large;
+    font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+.nomination-card {
+    /* color: #F48221; */
+    background-color: #EEEEEE;
+    font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    padding: 8px;
+}
+
+.card-list {
+    padding: 8px;
+}
+
+.card-collapser .fa {
+  transition: .3s transform ease-in-out;
+}
+.card-collapser .collapsed .fa {
+  transform: rotate(-90deg);
+}
+

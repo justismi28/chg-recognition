@@ -7,6 +7,7 @@
     <title>CHG Recognition</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.js" integrity="sha256-NSuqgY2hCZJUN6hDMFfdxvkexI7+iLxXQbL540RQ/c4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue2-filters/dist/vue2-filters.min.js"></script>
 <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js" integrity="sha256-T/f7Sju1ZfNNfBh7skWn0idlCBcI3RwdLSS4/I7NQKQ=" crossorigin="anonymous"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -15,6 +16,9 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    <!-- chevron for collapsing cards -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- local styles -->
     <link rel="stylesheet" type="text/css" href="style/style.css"/>
@@ -27,15 +31,12 @@
 <body>
 <div class="header">
     <div class="row">
-        <div class="side">
+        <div class="col-sm-4 col-md-3">
             <img src="assets/logo.png"/>
             <div class="recognition">Recognition</div>
         </div>
-        <div class="middle">
-            Welcome to CHG Recognition
-        </div>
-        <div class="side">
-            Hello
+        <div class="col-sm-8 col-md-9 header-text">
+            Nomination History
         </div>
     </div>
 </div>
@@ -74,20 +75,18 @@
 
     <div id="nominations">
         <h1>Nominations</h1>
+        <div class="card-list">
+        <nomination-card
+                v-for="n in orderBy(nominations, 'date', -1)"
+                v-bind:nomination="n"
+                v-bind:nominator="usersById[n.nominatorId]"
+                v-bind:nominee="usersById[n.nomineeId]"
+                v-bind:key="n._id"
+                class="nomination-card"
+        >
 
-
-
-        <ul>
-            <nomination-card
-                    v-for="n in nominations"
-                    v-bind:nomination="n"
-                    v-bind:nominator="usersById[n.nominatorId]"
-                    v-bind:nominee="usersById[n.nomineeId]"
-                    v-bind:key="n._id"
-            >
-
-            </nomination-card>
-        </ul>
+        </nomination-card>
+        </div>
     </div>
 </div>
 </body>
@@ -156,18 +155,33 @@
         }
     })
 
+    Vue.filter('formatDate', function(value) {
+        if (value) {
+            const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'numeric', day: 'numeric' })
+            const [{ value: month },,{ value: day },,{ value: year }] = dateTimeFormat.formatToParts(new Date(String(value)))
+
+            return `${month}/${day}/${year}`
+        }
+    })
+
     Vue.component('nomination-card', {
         props: ['nomination', 'nominator', 'nominee'],
-        template: `
-            <li class="nomination-card" v-if="nomination">
-               <div class="core-value">{{ nomination.coreValue }}</div>
-               <div class="message">{{ nomination.message }}</div>
-               <div class="points">{{ nomination.points }}</div>
-               <div class="date">{{ nomination.date }}</div>
-               <div class="nominator" v-if="nominator">Nominator: {{ nominator.name }}</div>
-               <div class="nominee" v-if="nominee">Nominee: {{ nominee.name }}</div>
-            </li>
-        `
+        template: '' +
+            '<div class="card card-collapser mt-3" style="width: 30rem;">' +
+            '   <a data-toggle="collapse" class="collapsed" :href="\'#test-data\' + nomination._id" aria-expanded="true" aria-controls="test-block" style="font-size: small"><i class="fa fa-chevron-down pull-left"></i></a>' +
+            '   <div class="row" data-toggle="collapse">' +
+            '       <div class="col-md-8 nominee" style="color: #F48221; font-weight: bold">' +
+            '           <span style="font-size: xx-large">{{ nominee.name }}</span>' +
+            '       </div>' +
+            '       <div class="col-md-4 points" style="color: #82B941; text-align: right; font-size: large; font-weight: bold">+{{ nomination.points }}</div>' +
+            '       <div class="col-md-8 core-value" style="color: #00A3E4; font-size: small">{{ nomination.coreValue }}</div>' +
+            '       <div class="col-md-4 date" style="text-align: right; font-size: small">{{ nomination.date | formatDate }}</div>' +
+            '   </div>' +
+            '   <div :id="\'test-data\' + nomination._id" class="row collapse">' +
+            '       <div class="col-md-8 nominator" style="font-size: small">Nominated by {{ nominator.name }}</div>' +
+            '       <div class="col-md-12 message">{{ nomination.message }}</div>' +
+            '   </div>' +
+            '</div>'
     })
 
     var app = new Vue({
@@ -181,6 +195,7 @@
             showNominationForm: false,
             nominations: [],
         },
+        mixins: [Vue2Filters.mixin],
 
         mounted () {
             axios.get('https://chg-recognition.curtisporter.com/nominations/')
