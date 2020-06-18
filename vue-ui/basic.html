@@ -115,6 +115,17 @@
     <form v-show="showNominationForm">
         <div class="form-row">
             <div class="form-group col-md-6">
+                <label>Nominee Name</label>
+                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
+            </div>
+        </div>
+        <div class="form-row" v-show="nominee">
+            <div class="form-group col-md-6">
+                <textarea class="form-control" v-model="message" v-bind:placeholder="'Describe why you are nominating ' + nominee"></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
                 <label for="coreValInput">Core Value</label>
                 <select name="coreValInput" id="coreValInput" class="form-control"
                         aria-describedby="Core value selection" v-model="coreValueCategory">
@@ -126,7 +137,7 @@
         <div class="form-row">
             <div class="form-group col-md-1">
                 <label for="points">Points</label>
-                <input v-model="points" step=5 type="number" min="50" max="1234" name="points" id="points" class="form-control" aria-describedby="Points given" />
+                <input v-model="points" step=5 type="number" min="50" max="1234" name="points" id="points" class="form-control" aria-describedby="Points given"/>
                 <small class="form-text text-muted">How many of your points do you want to gift?</small>
             </div>
         </div>
@@ -136,19 +147,9 @@
                 <v-select :options="users" label="name" :reduce="user => user._id" placeholder="YOUR name (nominator)?" v-model="nominator"></v-select>
             </div>
         </div>
+
         <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Nominee Name</label>
-                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
-            </div>
-        </div>
-        <div class="form-row" v-show="nominee">
-            <div class="form-group col-md-6">
-                <textarea class="form-control" v-model="message" v-bind:placeholder="'Describe why you are nominating ' + nominee"></textarea>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
+            <div class="form-group col-md-12">
                 <button v-on:click="submitNomination()" class="btn btn-primary btn-lg btn-block">Submit</button>
                 <br>
             </div>
@@ -156,7 +157,8 @@
 
     </form>
 </div>
-        `,
+
+`,
         methods: {
             submitNomination() {
                 window.confirm('Submit this nomination?') && alert('submitted')
