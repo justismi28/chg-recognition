@@ -1,10 +1,19 @@
 const {logger} = require('../logger');
 const OktaJwtVerifier = require('@okta/jwt-verifier')
 
+if (!process.env.OKTA_ISSUER_URL) {
+    logger.error('No OKTA_ISSUER_URL environment variable')
+    return
+}
+if (!process.env.OKTA_CLIENT_ID) {
+    logger.error('No OKTA_CLIENT_ID environment variable')
+    return
+}
+
 const oktaJwtVerifier = new OktaJwtVerifier({
-    issuer: 'https://chghealthcare.oktapreview.com/oauth2/auskmtjacfEi8ffM60h7'
+    issuer: process.env.OKTA_ISSUER_URL
 })
-const ClientId = '0oas5s11wsNsbTO0M0h7'
+const ClientId = process.env.OKTA_CLIENT_ID
 
 module.exports = function (req, res, next) {
     logger.debug('Verifying jwt')
