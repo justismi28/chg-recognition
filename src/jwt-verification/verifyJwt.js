@@ -1,4 +1,10 @@
 const {logger} = require('../logger');
+const OktaJwtVerifier = require('@okta/jwt-verifier')
+
+const oktaJwtVerifier = new OktaJwtVerifier({
+    issuer: 'https://chghealthcare.oktapreview.com/oauth2/auskmtjacfEi8ffM60h7'
+})
+const ClientId = '0oas5s11wsNsbTO0M0h7'
 
 module.exports = function (req, res, next) {
     logger.debug('Verifying jwt')
@@ -17,6 +23,16 @@ module.exports = function (req, res, next) {
         }
 
         logger.debug('JWT token is ' + authorizationComponents[1].length + ' characters long')
+        oktaJwtVerifier.verifyAccessToken(authorizationComponents[1], Aud)
+            .then(jwt => {
+                // the token is valid
+                logger.debug('JWT token is valid')
+            })
+            .catch(err => {
+                logger.error(err)
+                res.status(403).send('Authorization denied')
+                return
+            })
     }
 
     next()
