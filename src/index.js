@@ -32,8 +32,8 @@ const app = express();
 // swagger doc endpoint 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use(verifyJwt);
-logger.info('made it past jwt verification')
+//app.use(verifyJwt);
+//logger.info('made it past jwt verification')
 
 // adding Helmet to enhance security
 app.use(helmet());
