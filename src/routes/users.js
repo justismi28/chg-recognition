@@ -28,10 +28,6 @@ router.get('/:id', async (req, res) => {
 
 // defining an endpoint to get specific User by ID
 router.get('/uid/:uid', async (req, res) => {
-    if (!validateIdParam(req, res)) {
-        return;
-    }
-
     logger.debug('Requested user by UID ' + req.params.uid)
     res.send(await getUserByUid(req.params.uid));
 })
