@@ -67,8 +67,9 @@ export default {
 }
 
 .card-list {
-  justify-content: space-between;
+  justify-content: space-evenly;
   display: flex;
   flex-wrap: wrap;
+
 }
 </style>
