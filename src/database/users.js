@@ -48,6 +48,14 @@ async function getUserById(id) {
     return result;
   }
 
+
+async function getUserByUid(uid) {
+    const database = await getDatabase();
+    let result = await database.collection(collectionName).findOne({
+        uid: uid
+    });
+    return result;
+  }
 async function getUserByLogin(login) {
     const database = await getDatabase();
     return await database.collection(collectionName).findOne({
@@ -96,6 +104,7 @@ module.exports = {
   insertUser,
   getUsers,
   getUserById,
+  getUserByUid,
   getUserByLogin,
   deleteUser,
   updateUser,

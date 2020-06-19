@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const {logger} = require('../logger');
 
-const {insertUser, getUsers, getUserById, deleteUser, updateUser, validateUser} = require('../database/users');
+const {insertUser, getUsers, getUserById, getUserByUid, deleteUser, updateUser, validateUser} = require('../database/users');
 const {validateIdParam} = require('./validateIdParam');
 
 /* GET users listing. */
@@ -25,6 +25,16 @@ router.get('/:id', async (req, res) => {
 
     res.send(await getUserById(req.params.id));
 });
+
+// defining an endpoint to get specific User by ID
+router.get('/uid/:uid', async (req, res) => {
+    if (!validateIdParam(req, res)) {
+        return;
+    }
+
+    logger.debug('Requested user by UID ' + req.params.uid)
+    res.send(await getUserByUid(req.params.uid));
+})
 
 router.post('/', async (req, res) => {
     const newUser = req.body;
