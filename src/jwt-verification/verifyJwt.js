@@ -1,6 +1,6 @@
 const {logger} = require('../logger');
 
-function verify(req, res, next) {
+module.exports = function (req, res, next) {
     console.log('Verifying jwt')
 
     if (!req.headers.authorization) {
@@ -20,8 +20,4 @@ function verify(req, res, next) {
     }
 
     next()
-}
-
-module.exports = {
-  verify
 }
