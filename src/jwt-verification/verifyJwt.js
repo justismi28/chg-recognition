@@ -19,7 +19,7 @@ function verify(req, res, next) {
         logger.debug('JWT token is ' + authorizationComponents[1].length + ' characters long')
     }
 
-    next
+    next()
 }
 
 module.exports = {
