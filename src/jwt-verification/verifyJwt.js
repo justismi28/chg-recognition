@@ -23,7 +23,7 @@ module.exports = function (req, res, next) {
         }
 
         logger.debug('JWT token is ' + authorizationComponents[1].length + ' characters long')
-        oktaJwtVerifier.verifyAccessToken(authorizationComponents[1], Aud)
+        oktaJwtVerifier.verifyAccessToken(authorizationComponents[1], ClientId)
             .then(jwt => {
                 // the token is valid
                 logger.debug('JWT token is valid')
