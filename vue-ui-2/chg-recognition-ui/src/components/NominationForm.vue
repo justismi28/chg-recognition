@@ -1,5 +1,5 @@
 <template>
-  <div id="nominationForm">
+  <div id="nominationForm" class="component">
     <form v-show="showNominationForm">
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -74,27 +74,55 @@ export default {
     }
   },
 
-  mounted () {
-    axios.get('https://chg-recognition.curtisporter.com/nominations/')
-      .then((response) => (this.nominations = response.data))
+  async mounted () {
+    try {
+      let response = await axios.get('https://chg-recognition.curtisporter.com/users/')
+      this.users = response.data
+      this.usersById = this.users.reduce(function (usersById, user) { usersById[user._id] = user; return usersById }, {})
+      console.log('Finished populating usersById ' + JSON.stringify(this.usersById['5e729a3c6ea33327d2851b4f'], null, 2))
+    } catch (err) {
+      console.log(err)
+    }
+  },
+
+  methods: {
+    submitNomination () {
+      this.formDisabled = true
+      let postBody = {
+        'nominatorId': this.nominator,
+        'nomineeId': this.nominee,
+        'points': parseInt(this.points),
+        'coreValue': this.coreValueCategory,
+        'message': this.message
+      }
+      let isOk = window.confirm('Submit this nomination?')
+
+      if (isOk) {
+        console.log('Submitting: ' + JSON.stringify(postBody, null, 2))
+        axios({
+          url: 'https://chg-recognition.curtisporter.com/nominations/',
+          data: postBody,
+          method: 'POST',
+          mode: 'cors'
+        }).then(response => {
+          alert('submitted')
+        }).catch((error) => {
+          console.log(error)
+          alert('there was an error submitting ' + error)
+        }).finally((blah) => {
+          this.formDisabled = false
+        })
+      }
+      return false
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.component {
+    padding: 20px;
+    text-align: left;
 }
 </style>
