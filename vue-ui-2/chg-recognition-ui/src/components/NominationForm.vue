@@ -55,7 +55,7 @@
 <script>
 import Vue from 'vue'
 import Vue2Filters from 'vue2-filters'
-import { axios } from 'axios'
+import axios from 'axios'
 import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
@@ -70,6 +70,7 @@ export default {
       'nominee': null,
       'points': 50,
       'message': null,
+      'users': [],
       title: null,
       showNominationForm: true,
       coreValueOptions: [ 'Putting People First', 'Quality & Professionalism', 'Growth', 'Continuous Improvement', 'Integrity & Ethics' ]
@@ -78,9 +79,6 @@ export default {
   mixins: [Vue2Filters.mixin],
 
   mounted () {
-    axios.get('https://chg-recognition.curtisporter.com/nominations/')
-      .then((response) => (this.nominations = response.data))
-
     axios.get('https://chg-recognition.curtisporter.com/users/')
       .then(response => {
         this.users = response.data
