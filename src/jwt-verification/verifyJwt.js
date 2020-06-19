@@ -1,7 +1,7 @@
 const {logger} = require('../logger');
 
 module.exports = function (req, res, next) {
-    console.log('Verifying jwt')
+    logger.debug('Verifying jwt')
 
     if (!req.headers.authorization) {
         logger.error('No authorization supplied')
