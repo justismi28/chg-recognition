@@ -109,9 +109,7 @@
                 coreValueOptions: [ "Putting People First", "Quality & Professionalism", "Growth", "Continuous Improvement", "Integrity & Ethics"]
             }
         },
-        template: `
-<div>
-    <button v-on:click="showNominationForm = !showNominationForm">Nomination Form</button>
+        template: `<div>
     <form v-show="showNominationForm">
         <div class="form-row">
             <div class="form-group col-md-6">
@@ -119,11 +117,13 @@
                 <v-select :options="users" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
             </div>
         </div>
-        <div class="form-row" v-show="nominee">
+        <div class="form-row">
             <div class="form-group col-md-6">
-                <textarea class="form-control" v-model="message" v-bind:placeholder="'Describe why you are nominating ' + nominee"></textarea>
+                <label>Your Name</label>
+                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="YOUR name (nominator)?" v-model="nominator"></v-select>
             </div>
         </div>
+
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="coreValInput">Core Value</label>
@@ -137,20 +137,23 @@
         <div class="form-row">
             <div class="form-group col-md-1">
                 <label for="points">Points</label>
-                <input v-model="points" step=5 type="number" min="50" max="1234" name="points" id="points" class="form-control" aria-describedby="Points given"/>
-                <small class="form-text text-muted">How many of your points do you want to gift?</small>
+                <input class="form-control " v-model="points" step=5 type="number" min="50" max="1234" name="points" id="points" aria-describedby="Points given"/>
+            </div>
+            <div class="form-group col-md-5">
+                <label>&nbsp;</label>
+                <input class="form-control-range " v-model="points" step=5 type="range" min="50" max="1234" name="points" id="points" aria-describedby="Points given"/>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <label>Your Name</label>
-                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="YOUR name (nominator)?" v-model="nominator"></v-select>
+                <label>Message</label>
+                <textarea class="form-control" v-model="message" v-bind:placeholder="nominee ? 'Describe why you are nominating ' + nominee : ''"></textarea>
             </div>
         </div>
 
         <div class="form-row">
-            <div class="form-group col-md-12">
-                <button v-on:click="submitNomination()" class="btn btn-primary btn-lg btn-block">Submit</button>
+            <div class="form-group col-md-6">
+                <button v-on:click="submitNomination(); return false;" class="btn btn-primary btn-lg btn-block">Submit</button>
                 <br>
             </div>
         </div>
@@ -161,7 +164,25 @@
 `,
         methods: {
             submitNomination() {
-                window.confirm('Submit this nomination?') && alert('submitted')
+                let isOk = window.confirm('Submit this nomination?')
+                if (isOk) {
+                    // TODO this is broken, needs fixing.
+                    axios.post('https://chg-recognition.curtisporter.com/nominations/',
+                        {
+                            "nominatorId": this.nominator,
+                            "nomineeId": this.nominee,
+                            "points": this.points,
+                            "coreValue": this.coreValueCategory,
+                            "message": this.message,
+                            "date": new Date().toString(),
+                        }).then(response =>  {
+                            alert('submitted')
+                    }).catch((error) => {
+                        console.log(error)
+                        alert('there was an error submitting '+ error)
+                    })
+                }
+                return false;
             }
         }
     })
