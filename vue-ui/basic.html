@@ -45,8 +45,7 @@
 </div>
 <hr/>
 <div id="app">
-    <input v-model="message">
-    {{ message }}
+
     <br>
     <hr>
 
@@ -105,58 +104,65 @@
                 "points": 50,
                 "message": null,
                 title: null,
-                showNominationForm: true,
+                formDisabled: false,
                 coreValueOptions: [ "Putting People First", "Quality & Professionalism", "Growth", "Continuous Improvement", "Integrity & Ethics"]
             }
         },
         template: `<div>
-    <form v-show="showNominationForm">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Nominee Name</label>
-                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Your Name</label>
-                <v-select :options="users" label="name" :reduce="user => user._id" placeholder="YOUR name (nominator)?" v-model="nominator"></v-select>
-            </div>
-        </div>
+    <form>
+        <fieldset :disabled="formDisabled">
 
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="coreValInput">Core Value</label>
-                <select name="coreValInput" id="coreValInput" class="form-control"
-                        aria-describedby="Core value selection" v-model="coreValueCategory">
-                    <option v-for="o in coreValueOptions" value="{{o}}">{{o}}</option>
-                </select>
-                <small id="coreValueHelp" class="form-text text-muted">Select the CHG core value that most describes what this person did</small>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Nominee Name</label>
+                    <v-select :options="users" label="name" :reduce="user => user._id" placeholder="Who do you want to nominate?" v-model="nominee"></v-select>
+                </div>
             </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-1">
-                <label for="points">Points</label>
-                <input class="form-control " v-model="points" step=5 type="number" min="50" max="1234" name="points" id="points" aria-describedby="Points given"/>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Your Name</label>
+                    <v-select :options="users" label="name" :reduce="user => user._id" placeholder="YOUR name (nominator)?" v-model="nominator"></v-select>
+                </div>
             </div>
-            <div class="form-group col-md-5">
-                <label>&nbsp;</label>
-                <input class="form-control-range " v-model="points" step=5 type="range" min="50" max="1234" name="points" id="points" aria-describedby="Points given"/>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Message</label>
-                <textarea class="form-control" v-model="message" v-bind:placeholder="nominee ? 'Describe why you are nominating ' + nominee : ''"></textarea>
-            </div>
-        </div>
 
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <button v-on:click="submitNomination(); return false;" class="btn btn-primary btn-lg btn-block">Submit</button>
-                <br>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="coreValInput">Core Value</label>
+                    <select name="coreValInput" id="coreValInput" class="form-control"
+                            aria-describedby="Core value selection" v-model="coreValueCategory">
+                        <option v-for="o in coreValueOptions" v-bind:value="o">{{o}}</option>
+                    </select>
+                    <small id="coreValueHelp" class="form-text text-muted">Select the CHG core value that most describes what this person did</small>
+                </div>
             </div>
-        </div>
+            <div class="form-row">
+                <div class="form-group col-md-1">
+                    <label for="points">Points</label>
+                    <input class="form-control " v-model="points" step=5 type="number" min="50" max="1234" name="points" id="points" aria-describedby="Points given"/>
+                </div>
+                <div class="form-group col-md-5">
+                    <label>&nbsp;</label>
+                    <input class="form-control-range " v-model="points" step=5 type="range" min="50" max="1234" name="points" id="points" aria-describedby="Points given"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Message</label>
+                    <textarea class="form-control" v-model="message" v-bind:placeholder="nominee ? 'Describe why you are nominating ' + nominee : ''"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <button type="button" v-on:click="submitNomination(); return false;" class="btn btn-primary btn-lg btn-block">Submit
+                        <div v-show="formDisabled" class="spinner-border text-dark" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </button>
+                    <br>
+                </div>
+            </div>
+        </fieldset>
 
     </form>
 </div>
@@ -164,22 +170,30 @@
 `,
         methods: {
             submitNomination() {
+                this.formDisabled = true
+                let postBody = {
+                    "nominatorId": this.nominator,
+                    "nomineeId": this.nominee,
+                    "points": parseInt(this.points),
+                    "coreValue": this.coreValueCategory,
+                    "message": this.message,
+                    // "date": new Date().toString(),
+                }
                 let isOk = window.confirm('Submit this nomination?')
+
                 if (isOk) {
-                    // TODO this is broken, needs fixing.
-                    axios.post('https://chg-recognition.curtisporter.com/nominations/',
-                        {
-                            "nominatorId": this.nominator,
-                            "nomineeId": this.nominee,
-                            "points": this.points,
-                            "coreValue": this.coreValueCategory,
-                            "message": this.message,
-                            "date": new Date().toString(),
-                        }).then(response =>  {
-                            alert('submitted')
+                    axios({
+                        url: 'https://chg-recognition.curtisporter.com/nominations/',
+                        data: postBody,
+                        method: 'POST',
+                        mode: 'cors'
+                    }).then(response => {
+                        alert('submitted')
                     }).catch((error) => {
                         console.log(error)
-                        alert('there was an error submitting '+ error)
+                        alert('there was an error submitting ' + error)
+                    }).finally((blah) => {
+                        this.formDisabled = false
                     })
                 }
                 return false;
@@ -227,9 +241,7 @@
     var app = new Vue({
         el: '#app',
         data: {
-            message: 'New Todo item text',
             seen: true,
-            showTodos: false,
             users: [],
             usersById: {},
             showNominationForm: false,
