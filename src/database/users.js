@@ -48,7 +48,6 @@ async function getUserById(id) {
     return result;
   }
 
-
 async function getUserByUid(uid) {
     const database = await getDatabase();
     let result = await database.collection(collectionName).findOne({
@@ -56,6 +55,7 @@ async function getUserByUid(uid) {
     });
     return result;
   }
+
 async function getUserByLogin(login) {
     const database = await getDatabase();
     return await database.collection(collectionName).findOne({

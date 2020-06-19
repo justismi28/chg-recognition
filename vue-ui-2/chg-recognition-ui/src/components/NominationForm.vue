@@ -54,13 +54,10 @@
 
 <script>
 import Vue from 'vue'
-import Vue2Filters from 'vue2-filters'
 import axios from 'axios'
 import vSelect from 'vue-select'
 
 Vue.component('v-select', vSelect)
-
-Vue.use(Vue2Filters)
 
 export default {
   data () {
@@ -76,15 +73,10 @@ export default {
       coreValueOptions: [ 'Putting People First', 'Quality & Professionalism', 'Growth', 'Continuous Improvement', 'Integrity & Ethics' ]
     }
   },
-  mixins: [Vue2Filters.mixin],
 
   mounted () {
-    axios.get('https://chg-recognition.curtisporter.com/users/')
-      .then(response => {
-        this.users = response.data
-        this.usersById = this.users.reduce(function (usersById, user) { usersById[user._id] = user; return usersById }, {})
-        console.log(this.users.filter(user => user._id === '5e729a3c6ea33327d2851b4f'))
-      })
+    axios.get('https://chg-recognition.curtisporter.com/nominations/')
+      .then((response) => (this.nominations = response.data))
   }
 }
 </script>
