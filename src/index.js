@@ -32,7 +32,7 @@ const app = express();
 // swagger doc endpoint 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-//app.use(verifyJwt.verify);
+app.use(verifyJwt.verify);
 
 // adding Helmet to enhance security
 app.use(helmet());
