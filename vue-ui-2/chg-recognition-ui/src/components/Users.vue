@@ -1,5 +1,5 @@
 <template>
-  <div id="users" class="table">
+  <div id="users" class="table table-striped table-hover">
       <h1>Users </h1>
       <table>
           <thead>
