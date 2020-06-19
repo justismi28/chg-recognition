@@ -70,6 +70,6 @@ a {
   transition: .3s transform ease-in-out;
 }
 .card-collapser .collapsed .fa {
-  transform: rotate(180deg);
+  transform: rotate(-180deg);
 }
 </style>
